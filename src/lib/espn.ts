@@ -4,7 +4,11 @@ import type { Match, MatchStatus } from '@/types/match';
 export const ESPN_WORLD_CUP_SCOREBOARD_URL = 'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard';
 export const ESPN_WORLD_CUP_STANDINGS_URL = 'https://site.web.api.espn.com/apis/v2/sports/soccer/fifa.world/standings';
 
-const ESPN_REVALIDATE_SECONDS = 30;
+const ESPN_REVALIDATE_SECONDS = 60 * 15;
+const WORLD_CUP_START_DATE = '2026-06-11';
+const WORLD_CUP_END_DATE = '2026-07-19';
+const SCOREBOARD_BATCH_SIZE = 5;
+const ESPN_SCOREBOARD_TIMEOUT_MS = 15_000;
 
 const TEAM_FLAGS: Record<string, string> = {
   ARG: '🇦🇷', AUS: '🇦🇺', BEL: '🇧🇪', BIH: '🇧🇦', BRA: '🇧🇷', CAN: '🇨🇦', CIV: '🇨🇮', COL: '🇨🇴', CRC: '🇨🇷', CRO: '🇭🇷', CUW: '🇨🇼', CZE: '🇨🇿', DEN: '🇩🇰', ECU: '🇪🇨', EGY: '🇪🇬', ENG: '🏴', ESP: '🇪🇸', FRA: '🇫🇷', GER: '🇩🇪', GHA: '🇬🇭', HAI: '🇭🇹', IRN: '🇮🇷', ITA: '🇮🇹', JPN: '🇯🇵', KOR: '🇰🇷', MAR: '🇲🇦', MEX: '🇲🇽', NED: '🇳🇱', NOR: '🇳🇴', PAR: '🇵🇾', POL: '🇵🇱', POR: '🇵🇹', QAT: '🇶🇦', RSA: '🇿🇦', SCO: '🏴', SUI: '🇨🇭', TUR: '🇹🇷', UKR: '🇺🇦', URU: '🇺🇾', USA: '🇺🇸', WAL: '🏴',
@@ -101,17 +105,70 @@ type EspnStandingStat = {
   displayValue?: string;
 };
 
-export async function fetchEspnWorldCupMatches(): Promise<Match[]> {
-  const response = await fetch(ESPN_WORLD_CUP_SCOREBOARD_URL, {
+export async function fetchEspnWorldCupMatches(dateStrings = generateWorldCupDateStrings()): Promise<Match[]> {
+  const uniqueDateStrings = [...new Set(dateStrings)];
+  const matchesById = new Map<string, Match>();
+
+  for (const dateBatch of chunk(uniqueDateStrings, SCOREBOARD_BATCH_SIZE)) {
+    const scoreboards = await Promise.all(dateBatch.map(fetchEspnScoreboardForDate));
+
+    for (const scoreboard of scoreboards) {
+      for (const match of normalizeEspnScoreboard(scoreboard)) {
+        matchesById.set(match.id, match);
+      }
+    }
+  }
+
+  return [...matchesById.values()].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+}
+
+export function generateWorldCupDateStrings(startDate = WORLD_CUP_START_DATE, endDate = WORLD_CUP_END_DATE): string[] {
+  const dates: string[] = [];
+  const currentDate = new Date(`${startDate}T00:00:00Z`);
+  const finalDate = new Date(`${endDate}T00:00:00Z`);
+
+  while (currentDate <= finalDate) {
+    dates.push(formatEspnDate(currentDate));
+    currentDate.setUTCDate(currentDate.getUTCDate() + 1);
+  }
+
+  return dates;
+}
+
+export function toEspnDateString(isoDate: string) {
+  const parsedDate = new Date(`${isoDate}T00:00:00Z`);
+  return Number.isNaN(parsedDate.getTime()) ? null : formatEspnDate(parsedDate);
+}
+
+async function fetchEspnScoreboardForDate(dateString: string): Promise<EspnScoreboard> {
+  const response = await fetch(`${ESPN_WORLD_CUP_SCOREBOARD_URL}?dates=${dateString}`, {
     next: { revalidate: ESPN_REVALIDATE_SECONDS },
+    signal: AbortSignal.timeout(ESPN_SCOREBOARD_TIMEOUT_MS),
   } as RequestInit & { next: { revalidate: number } });
 
   if (!response.ok) {
-    throw new Error(`ESPN scoreboard request failed with status ${response.status}`);
+    throw new Error(`ESPN scoreboard request for ${dateString} failed with status ${response.status}`);
   }
 
-  const data = (await response.json()) as EspnScoreboard;
-  return normalizeEspnScoreboard(data);
+  return (await response.json()) as EspnScoreboard;
+}
+
+function formatEspnDate(date: Date) {
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+
+  return `${year}${month}${day}`;
+}
+
+function chunk<T>(items: T[], size: number) {
+  const chunks: T[][] = [];
+
+  for (let index = 0; index < items.length; index += size) {
+    chunks.push(items.slice(index, index + size));
+  }
+
+  return chunks;
 }
 
 export async function fetchEspnWorldCupStandings(): Promise<GroupStanding[]> {

@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
         data: filterMatchesByDate(mockTodayMatches, dateFilter),
         source: 'mock',
         fallback: true,
-        message: 'Live ESPN match data is temporarily unavailable, so CupWatch is showing fallback matches.',
+        message: 'Live match data is temporarily unavailable, so CupWatch is showing saved fixtures until the live feed returns.',
       },
       { headers: cacheHeaders() },
     );

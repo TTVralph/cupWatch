@@ -562,7 +562,7 @@ function NewsPreviewCard({ article, delay }: { article: NewsArticle; delay: numb
       {article.image ? <img src={article.image} alt="" className="h-32 w-full object-cover" loading="lazy" /> : null}
       <div className="p-4">
         <div className="mb-3 flex items-center justify-between gap-3 text-[0.65rem] font-black uppercase tracking-wide text-slate-400">
-          <span>{article.source ?? 'ESPN'}</span>
+          <span>{article.source ?? 'CupWatch'}</span>
           {article.publishedAt ? <time dateTime={article.publishedAt}>{formatNewsDate(article.publishedAt)}</time> : null}
         </div>
         <h3 className="text-lg font-black leading-tight">{article.title}</h3>
@@ -627,7 +627,7 @@ export default function TodayPage() {
         const payload = (await matchesResult.value.json()) as MatchesApiResponse;
         setMatches(sortMatches(payload.data));
         setMatchesState('ready');
-        if (payload.fallback) setNotice(payload.message ?? 'Showing fallback match data while the live feed is unavailable.');
+        if (payload.fallback) setNotice(payload.message ?? 'Showing saved match data while the live feed is unavailable.');
       } else {
         setMatches([]);
         setMatchesState('error');

@@ -40,9 +40,9 @@ const statusLabels: Record<MatchStatus, string> = {
 };
 
 const statusStyles: Record<MatchStatus, string> = {
-  live: 'bg-red-50 text-red-700 ring-red-100',
-  pre: 'bg-blue-50 text-blue-700 ring-blue-100',
-  post: 'bg-slate-100 text-slate-700 ring-slate-200',
+  live: 'bg-red-400/15 text-red-100 ring-red-300/30',
+  pre: 'bg-cyan-400/15 text-cyan-100 ring-cyan-300/30',
+  post: 'bg-slate-500/20 text-slate-200 ring-slate-400/30',
 };
 
 const localDateFormatter = new Intl.DateTimeFormat('en-US', {
@@ -129,7 +129,7 @@ function groupMatchesByLocalDate(matches: Match[]): DateGroup[] {
 }
 
 function LoadingCard() {
-  return <div className="h-40 animate-pulse rounded-[1.5rem] bg-white/80 shadow-sm shadow-slate-200/80" />;
+  return <div className="h-40 animate-pulse rounded-[1.5rem] bg-white/[0.08] shadow-lg shadow-slate-950/20" />;
 }
 
 function MatchCard({ match, index }: { match: Match; index: number }) {
@@ -138,34 +138,34 @@ function MatchCard({ match, index }: { match: Match; index: number }) {
 
   return (
     <Link href={`/match/${match.id}`} className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2" aria-label={`View details for ${match.homeTeam.name} vs ${match.awayTeam.name}`}>
-      <MotionCard delay={Math.min(index * 0.02, 0.18)} className="rounded-[1.5rem] border border-white/80 bg-white p-4 shadow-sm shadow-slate-200/80 transition hover:-translate-y-0.5 hover:shadow-md hover:shadow-slate-300/70">
+      <MotionCard delay={Math.min(index * 0.02, 0.18)} className="rounded-[1.5rem] border border-white/10 bg-white/[0.08] text-slate-100 p-4 shadow-lg shadow-slate-950/20 transition hover:-translate-y-0.5 hover:bg-white/[0.11]">
       <div className="mb-3 flex items-start justify-between gap-3">
         <div>
-          <p className="text-lg font-black text-slate-950">{formatLocalTime(match.date)}</p>
-          <p className="text-xs font-black uppercase tracking-wide text-emerald-700">{deriveStageLabel(match)}</p>
+          <p className="text-lg font-black text-white">{formatLocalTime(match.date)}</p>
+          <p className="text-xs font-black uppercase tracking-wide text-emerald-300">{deriveStageLabel(match)}</p>
         </div>
         <span className={`rounded-full px-3 py-1 text-xs font-black uppercase tracking-wide ring-1 ${statusStyles[match.status]}`}>{statusLabels[match.status]}</span>
       </div>
 
       <div className="space-y-2">
-        <div className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 px-3 py-2">
+        <div className="flex items-center justify-between gap-3 rounded-2xl bg-white/[0.06] px-3 py-2">
           <div className="min-w-0">
-            <p className="truncate text-sm font-black text-slate-950">{match.homeTeam.name}</p>
-            <p className="text-xs font-bold text-slate-400">{match.homeTeam.abbreviation}</p>
+            <p className="truncate text-sm font-black text-white">{match.homeTeam.name}</p>
+            <p className="text-xs font-bold text-slate-500">{match.homeTeam.abbreviation}</p>
           </div>
-          {score ? <span className="text-base font-black text-slate-950">{match.homeTeam.score ?? 0}</span> : null}
+          {score ? <span className="text-base font-black text-white">{match.homeTeam.score ?? 0}</span> : null}
         </div>
-        <div className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 px-3 py-2">
+        <div className="flex items-center justify-between gap-3 rounded-2xl bg-white/[0.06] px-3 py-2">
           <div className="min-w-0">
-            <p className="truncate text-sm font-black text-slate-950">{match.awayTeam.name}</p>
-            <p className="text-xs font-bold text-slate-400">{match.awayTeam.abbreviation}</p>
+            <p className="truncate text-sm font-black text-white">{match.awayTeam.name}</p>
+            <p className="text-xs font-bold text-slate-500">{match.awayTeam.abbreviation}</p>
           </div>
-          {score ? <span className="text-base font-black text-slate-950">{match.awayTeam.score ?? 0}</span> : null}
+          {score ? <span className="text-base font-black text-white">{match.awayTeam.score ?? 0}</span> : null}
         </div>
       </div>
 
-      <div className="mt-3 space-y-1 text-sm font-semibold text-slate-600">
-        {score ? <p className="font-black text-slate-950">Score: {score}</p> : null}
+      <div className="mt-3 space-y-1 text-sm font-semibold text-slate-300">
+        {score ? <p className="font-black text-white">Score: {score}</p> : null}
         <p>Status: {match.statusText}</p>
         {location ? <p>{location}</p> : null}
         {match.broadcasts?.length ? <p>Broadcasts: {match.broadcasts.join(', ')}</p> : null}
@@ -200,7 +200,7 @@ export default function SchedulePage() {
         if (!isMounted) return;
 
         setMatches(payload.data);
-        setFallbackMessage(payload.fallback ? payload.message ?? 'Showing fallback matches while live data is unavailable.' : null);
+        setFallbackMessage(payload.fallback ? payload.message ?? 'Showing saved fixtures while live match data is unavailable.' : null);
       } catch (fetchError) {
         if (!isMounted) return;
         console.error('Unable to load schedule:', fetchError);
@@ -224,10 +224,10 @@ export default function SchedulePage() {
 
   return (
     <PageShell eyebrow="Schedule" title="Every World Cup match, day by day" description="Browse the full tournament schedule in your local timezone, with quick filters for favorites, hosts, and the knockout rounds.">
-      {fallbackMessage ? <div className="mb-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-bold text-amber-800">{fallbackMessage}</div> : null}
-      {error ? <div className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">{error}</div> : null}
+      {fallbackMessage ? <div className="mb-4 rounded-2xl border border-amber-300/30 bg-amber-300/10 px-4 py-3 text-sm font-bold text-amber-100">{fallbackMessage}</div> : null}
+      {error ? <div className="mb-4 rounded-2xl border border-red-300/30 bg-red-400/10 px-4 py-3 text-sm font-bold text-red-100">{error}</div> : null}
 
-      <div className="mb-5 overflow-x-auto pb-1">
+      <div className="mb-5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <div className="flex min-w-max gap-2">
           {filters.map((filter) => {
             const active = activeFilter === filter.id;
@@ -237,7 +237,7 @@ export default function SchedulePage() {
                 type="button"
                 onClick={() => setActiveFilter(filter.id)}
                 className={`rounded-full px-4 py-2 text-sm font-black transition ${
-                  active ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'bg-white text-slate-600 shadow-sm shadow-slate-200/80 hover:text-slate-950'
+                  active ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'bg-white/[0.08] text-slate-300 shadow-lg shadow-slate-950/15 hover:bg-white/[0.12] hover:text-white'
                 }`}
               >
                 {filter.label}
@@ -257,9 +257,9 @@ export default function SchedulePage() {
         <div className="space-y-7">
           {groupedMatches.map((group) => (
             <section key={group.key}>
-              <div className="sticky top-[73px] z-20 mb-3 rounded-2xl border border-slate-200/80 bg-slate-50/95 px-4 py-3 backdrop-blur">
+              <div className="sticky top-[73px] z-20 mb-3 rounded-2xl border border-slate-200/80 bg-white/[0.06]/95 px-4 py-3 backdrop-blur">
                 <div className="flex items-center justify-between gap-3">
-                  <h2 className="text-xl font-black text-slate-950">{group.title}</h2>
+                  <h2 className="text-xl font-black text-white">{group.title}</h2>
                   <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-slate-500 shadow-sm shadow-slate-200/80">{group.matches.length}</span>
                 </div>
               </div>
@@ -270,7 +270,7 @@ export default function SchedulePage() {
           ))}
         </div>
       ) : (
-        <div className="rounded-[1.5rem] border border-dashed border-slate-200 bg-white/70 px-4 py-8 text-center text-sm font-bold text-slate-500">
+        <div className="rounded-[1.5rem] border border-dashed border-white/15 bg-white/[0.06] px-4 py-8 text-center text-sm font-bold text-slate-500">
           {activeFilter === 'favorites' && !favorites.length ? 'Follow teams from the homepage or match pages to use the Favorites filter.' : 'No matches found for this filter.'}
         </div>
       )}

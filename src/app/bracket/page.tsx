@@ -37,9 +37,9 @@ const statusLabels: Record<MatchStatus, string> = {
 };
 
 const statusStyles: Record<MatchStatus, string> = {
-  live: 'bg-red-50 text-red-700 ring-red-100',
-  pre: 'bg-blue-50 text-blue-700 ring-blue-100',
-  post: 'bg-slate-100 text-slate-700 ring-slate-200',
+  live: 'bg-red-400/15 text-red-100 ring-red-300/30',
+  pre: 'bg-cyan-400/15 text-cyan-100 ring-cyan-300/30',
+  post: 'bg-slate-500/20 text-slate-200 ring-slate-400/30',
 };
 
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
@@ -112,12 +112,12 @@ function formatTime(date: string) {
 }
 
 function LoadingCard() {
-  return <div className="h-56 animate-pulse rounded-[1.5rem] bg-white/80 shadow-sm shadow-slate-200/80" />;
+  return <div className="h-56 animate-pulse rounded-[1.5rem] bg-white/[0.08] shadow-lg shadow-slate-950/20" />;
 }
 
 function EmptyStage({ label }: { label: string }) {
   return (
-    <div className="rounded-[1.5rem] border border-dashed border-slate-200 bg-white/70 px-4 py-8 text-center text-sm font-bold text-slate-500">
+    <div className="rounded-[1.5rem] border border-dashed border-white/15 bg-white/[0.06] px-4 py-8 text-center text-sm font-bold text-slate-500">
       {label} matches are not available yet.
     </div>
   );
@@ -129,35 +129,35 @@ function BracketMatchCard({ match, index }: { match: Match; index: number }) {
 
   return (
     <Link href={`/match/${match.id}`} className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2" aria-label={`View details for ${displayTeamName(match, 'home')} vs ${displayTeamName(match, 'away')}`}>
-      <MotionCard delay={index * 0.04} className="rounded-[1.5rem] border border-white/80 bg-white p-4 shadow-sm shadow-slate-200/80 transition hover:-translate-y-0.5 hover:shadow-md hover:shadow-slate-300/70">
+      <MotionCard delay={index * 0.04} className="rounded-[1.5rem] border border-white/10 bg-white/[0.08] text-slate-100 p-4 shadow-lg shadow-slate-950/20 transition hover:-translate-y-0.5 hover:bg-white/[0.11]">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-black text-slate-950">{formatDate(match.date)}</p>
+          <p className="text-sm font-black text-white">{formatDate(match.date)}</p>
           <p className="text-xs font-bold text-slate-500">{formatTime(match.date)}</p>
         </div>
         <span className={`rounded-full px-3 py-1 text-[0.68rem] font-black uppercase tracking-wide ring-1 ${statusStyles[match.status]}`}>{statusLabels[match.status]}</span>
       </div>
 
       <div className="space-y-2">
-        <div className="flex min-w-0 items-center justify-between gap-3 rounded-2xl bg-slate-50 px-4 py-3">
+        <div className="flex min-w-0 items-center justify-between gap-3 rounded-2xl bg-white/[0.06] px-4 py-3">
           <div className="min-w-0">
-            <p className="break-words text-sm font-black text-slate-900">{displayTeamName(match, 'home')}</p>
-            <p className="text-xs font-bold text-slate-400">{displayTeamCode(match, 'home')}</p>
+            <p className="break-words text-sm font-black text-white">{displayTeamName(match, 'home')}</p>
+            <p className="text-xs font-bold text-slate-500">{displayTeamCode(match, 'home')}</p>
           </div>
-          {hasScore ? <span className="shrink-0 text-lg font-black text-slate-950">{match.homeTeam.score ?? 0}</span> : null}
+          {hasScore ? <span className="shrink-0 text-lg font-black text-white">{match.homeTeam.score ?? 0}</span> : null}
         </div>
-        <div className="px-2 text-xs font-black uppercase tracking-wide text-emerald-600">vs</div>
-        <div className="flex min-w-0 items-center justify-between gap-3 rounded-2xl bg-slate-50 px-4 py-3">
+        <div className="px-2 text-xs font-black uppercase tracking-wide text-emerald-300">vs</div>
+        <div className="flex min-w-0 items-center justify-between gap-3 rounded-2xl bg-white/[0.06] px-4 py-3">
           <div className="min-w-0">
-            <p className="break-words text-sm font-black text-slate-900">{displayTeamName(match, 'away')}</p>
-            <p className="text-xs font-bold text-slate-400">{displayTeamCode(match, 'away')}</p>
+            <p className="break-words text-sm font-black text-white">{displayTeamName(match, 'away')}</p>
+            <p className="text-xs font-bold text-slate-500">{displayTeamCode(match, 'away')}</p>
           </div>
-          {hasScore ? <span className="shrink-0 text-lg font-black text-slate-950">{match.awayTeam.score ?? 0}</span> : null}
+          {hasScore ? <span className="shrink-0 text-lg font-black text-white">{match.awayTeam.score ?? 0}</span> : null}
         </div>
       </div>
 
-      <div className="mt-4 space-y-1 text-sm font-semibold text-slate-600">
-        <p className="font-black text-slate-950">{match.statusText}</p>
+      <div className="mt-4 space-y-1 text-sm font-semibold text-slate-300">
+        <p className="font-black text-white">{match.statusText}</p>
         {location ? <p>{location}</p> : null}
       </div>
       </MotionCard>
@@ -189,7 +189,7 @@ export default function BracketPage() {
         if (!isMounted) return;
 
         setMatches(payload.data);
-        setFallbackMessage(payload.fallback ? payload.message ?? 'Showing fallback matches while live data is unavailable.' : null);
+        setFallbackMessage(payload.fallback ? payload.message ?? 'Showing saved fixtures while live match data is unavailable.' : null);
       } catch (fetchError) {
         if (!isMounted) return;
         console.error('Unable to load bracket matches:', fetchError);
@@ -227,9 +227,9 @@ export default function BracketPage() {
   const selectedMatches = matchesByStage.get(selectedStage) ?? [];
 
   return (
-    <PageShell eyebrow="Bracket" title="Knockout path, one stage at a time" description="Real ESPN knockout fixtures power each card while clean stage tabs keep the mobile bracket readable.">
-      {fallbackMessage ? <div className="mb-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-bold text-amber-800">{fallbackMessage}</div> : null}
-      {error ? <div className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">{error}</div> : null}
+    <PageShell eyebrow="Bracket" title="Knockout path, one stage at a time" description="Knockout fixtures are grouped into clean stage tabs so the mobile bracket stays readable.">
+      {fallbackMessage ? <div className="mb-4 rounded-2xl border border-amber-300/30 bg-amber-300/10 px-4 py-3 text-sm font-bold text-amber-100">{fallbackMessage}</div> : null}
+      {error ? <div className="mb-4 rounded-2xl border border-red-300/30 bg-red-400/10 px-4 py-3 text-sm font-bold text-red-100">{error}</div> : null}
 
       <div className="mb-5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <div className="flex min-w-max gap-2">
@@ -243,7 +243,7 @@ export default function BracketPage() {
                 type="button"
                 onClick={() => setSelectedStage(stage.id)}
                 className={`rounded-full px-4 py-2 text-sm font-black transition ${
-                  active ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'bg-white text-slate-600 shadow-sm shadow-slate-200/80 hover:text-slate-950'
+                  active ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'bg-white/[0.08] text-slate-300 shadow-lg shadow-slate-950/15 hover:bg-white/[0.12] hover:text-white'
                 }`}
               >
                 {stage.label}

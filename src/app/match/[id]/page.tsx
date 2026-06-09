@@ -49,8 +49,8 @@ function DetailSection({ title, children }: { title: string; children: ReactNode
 function InfoRow({ label, value }: { label: string; value?: ReactNode }) {
   return (
     <div className="flex items-start justify-between gap-4 rounded-2xl bg-slate-950/40 px-4 py-3">
-      <span className="text-xs font-black uppercase tracking-wide text-slate-500">{label}</span>
-      <span className="text-right text-sm font-bold text-slate-100">{value || 'TBA'}</span>
+      <span className="shrink-0 text-xs font-black uppercase tracking-wide text-slate-500">{label}</span>
+      <span className="min-w-0 break-words text-right text-sm font-bold text-slate-100">{value || 'TBA'}</span>
     </div>
   );
 }
@@ -76,7 +76,7 @@ function MatchNotFound() {
       <MotionCard className="max-w-md rounded-[2rem] border border-white/10 bg-white/[0.08] p-6 text-center shadow-2xl shadow-slate-950/30 backdrop-blur">
         <p className="text-xs font-black uppercase tracking-[0.28em] text-emerald-200">Match not found</p>
         <h1 className="mt-3 text-3xl font-black tracking-tight">We could not find that fixture.</h1>
-        <p className="mt-3 text-sm leading-6 text-slate-300">The match may have moved, or the ESPN schedule may have refreshed. Head back to the schedule to pick another match.</p>
+        <p className="mt-3 text-sm leading-6 text-slate-300">The match may have moved, or the schedule may have refreshed. Head back to the schedule to pick another fixture.</p>
         <Link href="/schedule" className="mt-6 inline-flex rounded-full bg-white px-5 py-3 text-sm font-black text-slate-950 transition hover:bg-emerald-100">
           Back to Schedule
         </Link>
@@ -94,9 +94,11 @@ function FollowTeamButton({ team }: { team: Match['homeTeam'] }) {
       type="button"
       onClick={() => toggleFavorite(team.abbreviation)}
       aria-pressed={following}
-      className={`mx-auto inline-flex rounded-full border px-3 py-2 text-xs font-black transition ${following ? 'border-emerald-300 bg-emerald-300 text-slate-950' : 'border-white/10 bg-white/10 text-slate-200 hover:bg-white/15'}`}
+      aria-label={following ? `Stop following ${team.name}` : `Follow ${team.name}`}
+      title={following ? `Following ${team.name}` : `Follow ${team.name}`}
+      className={`mx-auto inline-flex max-w-full rounded-full border px-3 py-2 text-xs font-black transition ${following ? 'border-emerald-300 bg-emerald-300 text-slate-950' : 'border-white/10 bg-white/10 text-slate-200 hover:bg-white/15'}`}
     >
-      {following ? `Following ${team.name}` : `Follow ${team.name}`}
+      <span className="truncate">{following ? 'Following' : 'Follow'}</span>
     </button>
   );
 }
@@ -116,11 +118,11 @@ function MatchDetail({ match }: { match: Match }) {
         <MotionCard className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.08] shadow-2xl shadow-slate-950/30 backdrop-blur">
           <div className="border-b border-white/10 p-5">
             <div className="flex items-start justify-between gap-3">
-              <div>
+              <div className="min-w-0">
                 <p className="text-xs font-black uppercase tracking-[0.28em] text-emerald-200">{deriveStageLabel(match)}</p>
                 <h1 className="mt-2 text-2xl font-black tracking-tight md:text-4xl">{match.homeTeam.abbreviation} vs {match.awayTeam.abbreviation}</h1>
               </div>
-              <span className={`rounded-full border px-3 py-1 text-xs font-black uppercase tracking-wide ${statusStyles[match.status]}`}>{statusLabels[match.status]}</span>
+              <span className={`shrink-0 rounded-full border px-3 py-1 text-xs font-black uppercase tracking-wide ${statusStyles[match.status]}`}>{statusLabels[match.status]}</span>
             </div>
           </div>
 
@@ -175,12 +177,6 @@ function MatchDetail({ match }: { match: Match }) {
             ) : (
               <p className="rounded-2xl bg-slate-950/40 px-4 py-3 text-slate-300">Broadcast information is not available yet.</p>
             )}
-          </DetailSection>
-
-          <DetailSection title="Related Links">
-            <InfoRow label="Stats" value="Coming soon" />
-            <InfoRow label="Lineups" value="Coming soon" />
-            <InfoRow label="Timeline" value="Coming soon" />
           </DetailSection>
         </div>
       </div>

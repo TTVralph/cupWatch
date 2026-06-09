@@ -313,9 +313,14 @@ function normalizeTeam(competitor: EspnCompetitor): Match['homeTeam'] {
   return {
     name: competitor.team?.displayName ?? 'TBD',
     abbreviation: competitor.team?.abbreviation ?? 'TBD',
-    logo: competitor.team?.logo,
+    logo: sanitizeLogoUrl(competitor.team?.logo),
     score: competitor.score,
   };
+}
+
+function sanitizeLogoUrl(url?: string) {
+  if (!url) return undefined;
+  return /fifa|sofasc/i.test(url) ? undefined : url;
 }
 
 function normalizeRound(competition: EspnCompetition | undefined, event: EspnEvent) {
@@ -337,6 +342,8 @@ const BLOCKED_NEWS_TERMS = [
   ' bets',
   'odds',
   'sportsbook',
+  'fantasy',
+  'sofascore',
   'bookmaker',
   'wager',
   'wagering',

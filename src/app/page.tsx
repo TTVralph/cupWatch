@@ -30,6 +30,12 @@ type NewsApiResponse = {
 
 type LoadState = 'idle' | 'loading' | 'ready' | 'error';
 
+type BeforeInstallPromptEvent = Event & {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
+};
+
+const INSTALL_PROMPT_DISMISSED_KEY = 'cupwatch-install-prompt-dismissed';
 const TOURNAMENT_START = new Date('2026-06-11T00:00:00Z');
 const TOURNAMENT_END = new Date('2026-07-20T00:00:00Z');
 const OPENING_MATCH_HINT = 'Mexico vs South Africa';
@@ -202,6 +208,79 @@ function formatGoalDifference(goalDifference: number) {
 
 function LoadingPanel({ className = '' }: { className?: string }) {
   return <div className={`animate-pulse rounded-[1.75rem] border border-white/10 bg-white/10 ${className}`} />;
+}
+
+
+function isStandaloneDisplayMode() {
+  const navigatorWithStandalone = window.navigator as Navigator & { standalone?: boolean };
+
+  return window.matchMedia('(display-mode: standalone)').matches || navigatorWithStandalone.standalone === true;
+}
+
+function InstallPromptCard() {
+  const [isVisible, setIsVisible] = useState(false);
+  const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+
+  useEffect(() => {
+    if (isStandaloneDisplayMode()) return;
+    if (window.localStorage.getItem(INSTALL_PROMPT_DISMISSED_KEY) === 'true') return;
+
+    const showTimer = window.setTimeout(() => setIsVisible(true), 1_800);
+    const handleBeforeInstallPrompt = (event: Event) => {
+      event.preventDefault();
+      setInstallPrompt(event as BeforeInstallPromptEvent);
+      setIsVisible(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => {
+      window.clearTimeout(showTimer);
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const dismiss = () => {
+    window.localStorage.setItem(INSTALL_PROMPT_DISMISSED_KEY, 'true');
+    setIsVisible(false);
+  };
+
+  const handleInstall = async () => {
+    if (!installPrompt) return;
+
+    await installPrompt.prompt();
+    const choice = await installPrompt.userChoice;
+    setInstallPrompt(null);
+
+    if (choice.outcome === 'accepted') {
+      dismiss();
+    }
+  };
+
+  if (!isVisible) return null;
+
+  return (
+    <MotionCard className="rounded-[1.5rem] border border-emerald-300/25 bg-[linear-gradient(135deg,rgba(16,185,129,0.18),rgba(15,23,42,0.88))] p-4 text-white shadow-xl shadow-slate-950/20 backdrop-blur">
+      <div className="flex gap-3">
+        <div className="grid size-11 shrink-0 place-items-center rounded-2xl bg-emerald-400 text-sm font-black text-slate-950 shadow-lg shadow-emerald-500/20">CW</div>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-black">Add CupWatch to your home screen</p>
+          <p className="mt-1 text-xs font-semibold leading-5 text-slate-300">Install the dark, mobile-first CupWatch app for quick access during World Cup 2026.</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {installPrompt ? (
+              <button type="button" onClick={handleInstall} className="rounded-full bg-emerald-300 px-4 py-2 text-xs font-black text-slate-950 transition hover:bg-emerald-200">
+                Add app
+              </button>
+            ) : (
+              <span className="rounded-full border border-white/10 bg-white/10 px-3 py-2 text-xs font-bold text-slate-200">Use your browser’s share/menu button to add it.</span>
+            )}
+            <button type="button" onClick={dismiss} className="rounded-full border border-white/10 px-4 py-2 text-xs font-black text-slate-300 transition hover:bg-white/10 hover:text-white">
+              Not now
+            </button>
+          </div>
+        </div>
+      </div>
+    </MotionCard>
+  );
 }
 
 function TeamBadge({ name, logo }: { name: string; logo?: string }) {
@@ -592,6 +671,8 @@ export default function TodayPage() {
     <main className="page-container min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.14),transparent_28rem),linear-gradient(180deg,#020617_0%,#08111f_48%,#0f172a_100%)] px-4 pt-5 md:px-6 md:pt-8">
       <div className="mx-auto max-w-6xl space-y-7">
         <HeroCard matches={matches} now={now} isLoading={matchesState === 'loading'} />
+
+        <InstallPromptCard />
 
         {notice ? <div className="rounded-2xl border border-amber-300/30 bg-amber-300/10 px-4 py-3 text-sm font-bold text-amber-100">{notice}</div> : null}
         {hasLoadError ? <div className="rounded-2xl border border-red-300/30 bg-red-500/10 px-4 py-3 text-sm font-bold text-red-100">Some dashboard sections could not load. Try refreshing in a moment.</div> : null}

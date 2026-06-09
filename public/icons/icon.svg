@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">CupWatch app icon</title>
+  <desc id="desc">A dark rounded square with emerald accents and the initials CW.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#020617"/>
+      <stop offset="0.58" stop-color="#08111f"/>
+      <stop offset="1" stop-color="#064e3b"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="24%" cy="14%" r="72%">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="112" fill="url(#glow)"/>
+  <rect x="56" y="56" width="400" height="400" rx="104" fill="#0f172a" fill-opacity="0.58" stroke="#10b981" stroke-width="14"/>
+  <path fill="#f8fafc" d="M119 169h116v34h-82v106h82v34H119V169Zm171 0h34v174h-34V169Zm142 0h34v174h-34V169Zm-94 94h34v80h-34v-80Zm46 0h34v80h-34v-80Z"/>
+</svg>

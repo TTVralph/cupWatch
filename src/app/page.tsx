@@ -284,38 +284,58 @@ function InstallPromptCard() {
   );
 }
 
-function TeamBadge({ name, logo }: { name: string; logo?: string }) {
+function TeamBadge({ name, logo, size = 'md' }: { name: string; logo?: string; size?: 'sm' | 'md' }) {
+  const sizeClass = size === 'sm' ? 'size-8 text-[0.65rem]' : 'size-9 text-xs';
+
   if (logo) {
-    return <img src={logo} alt="" className="size-9 rounded-full bg-white/10 object-contain p-1" loading="lazy" />;
+    return <img src={logo} alt="" className={`${sizeClass} rounded-full bg-white object-contain p-0.5 ring-1 ring-white/15`} loading="lazy" />;
   }
 
-  return <span className="grid size-9 place-items-center rounded-full bg-white/10 text-xs font-black text-white ring-1 ring-white/10">{getTeamInitials(name)}</span>;
+  return <span className={`grid ${sizeClass} place-items-center rounded-full bg-white/10 font-black text-white ring-1 ring-white/10`}>{getTeamInitials(name)}</span>;
+}
+
+function AbstractCupVisual() {
+  return (
+    <div className="absolute inset-y-0 right-0 hidden w-[46%] overflow-hidden sm:block" aria-hidden="true">
+      <div className="absolute right-5 top-10 h-36 w-36 rounded-full bg-[radial-gradient(circle,rgba(245,197,91,0.34),rgba(245,197,91,0.08)_44%,transparent_68%)] blur-sm md:right-16 md:top-8 md:h-48 md:w-48" />
+      <div className="absolute right-2 top-8 h-44 w-32 opacity-60 md:right-20 md:top-7 md:h-56 md:w-40">
+        <div className="absolute left-1/2 top-1 h-20 w-14 -translate-x-1/2 rounded-b-[2.5rem] rounded-t-[1rem] border-[7px] border-[rgba(245,197,91,0.76)] bg-[linear-gradient(135deg,rgba(245,197,91,0.34),rgba(255,255,255,0.05)_45%,rgba(217,149,47,0.22))] shadow-[0_0_34px_rgba(245,197,91,0.24)] md:h-28 md:w-20 md:border-[9px]" />
+        <div className="absolute left-[1.08rem] top-9 h-10 w-8 rounded-l-full border-4 border-r-0 border-[rgba(245,197,91,0.42)] md:left-4 md:top-12 md:h-14 md:w-10" />
+        <div className="absolute right-[1.08rem] top-9 h-10 w-8 rounded-r-full border-4 border-l-0 border-[rgba(245,197,91,0.42)] md:right-4 md:top-12 md:h-14 md:w-10" />
+        <div className="absolute left-1/2 top-[5.1rem] h-14 w-5 -translate-x-1/2 bg-[linear-gradient(90deg,rgba(133,86,24,0.3),rgba(245,197,91,0.72),rgba(133,86,24,0.28))] md:top-[7rem] md:h-20 md:w-7" />
+        <div className="absolute bottom-8 left-1/2 h-4 w-20 -translate-x-1/2 rounded-t-full bg-[linear-gradient(135deg,rgba(245,197,91,0.78),rgba(126,78,16,0.55))] md:bottom-7 md:w-28" />
+        <div className="absolute bottom-4 left-1/2 h-4 w-28 -translate-x-1/2 rounded-full bg-[linear-gradient(135deg,rgba(245,197,91,0.64),rgba(75,46,10,0.84))] md:w-36" />
+      </div>
+      <div className="absolute right-3 top-16 h-px w-56 -rotate-[18deg] bg-[linear-gradient(90deg,transparent,rgba(255,238,190,0.85),transparent)] shadow-[0_0_16px_rgba(245,197,91,0.55)] md:right-12 md:w-80" />
+      <div className="absolute right-0 top-24 h-px w-64 -rotate-[10deg] bg-[linear-gradient(90deg,transparent,rgba(245,197,91,0.36),transparent)] md:w-96" />
+      <div className="absolute bottom-6 right-10 h-24 w-56 rounded-[50%] border border-[rgba(245,197,91,0.11)]" />
+    </div>
+  );
 }
 
 function HeroCard({ matches, isLoading }: { matches: Match[]; now: Date; isLoading: boolean }) {
-  return (
-    <MotionCard className="cw-hero min-h-[18.75rem] overflow-hidden p-4 text-white sm:min-h-[20rem] sm:p-5 md:min-h-[22rem] md:p-8">
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute inset-y-0 right-0 w-[52%] bg-[radial-gradient(circle_at_70%_30%,rgba(245,197,91,0.34),transparent_26%),linear-gradient(90deg,transparent,rgba(0,0,0,0.18)_24%,rgba(217,149,47,0.22))]" />
-        <div className="absolute right-3 top-5 h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(245,197,91,0.26),transparent_58%)] blur-sm sm:right-10 sm:h-56 sm:w-56" />
-        <div className="absolute right-[-1.5rem] top-4 h-44 w-36 opacity-25 sm:right-10 sm:top-7 sm:h-56 sm:w-44 md:opacity-35">
-          <div className="mx-auto h-24 w-16 rounded-b-[2rem] rounded-t-lg border-[9px] border-[var(--cw-primary)] sm:h-32 sm:w-[5.5rem]" />
-          <div className="mx-auto h-14 w-5 bg-[var(--cw-primary)] sm:h-[4.5rem]" />
-          <div className="mx-auto h-3.5 w-24 rounded-full bg-[var(--cw-primary)] sm:w-32" />
-        </div>
-        <div className="absolute right-6 top-11 h-px w-44 rotate-[-22deg] bg-[linear-gradient(90deg,transparent,rgba(255,236,182,0.9),transparent)] shadow-[0_0_18px_rgba(245,197,91,0.55)] sm:w-72" />
-        <div className="absolute right-0 top-24 h-px w-56 rotate-[-12deg] bg-[linear-gradient(90deg,transparent,rgba(245,197,91,0.5),transparent)] sm:w-80" />
-        <div className="absolute inset-x-0 bottom-0 h-20 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,0.72))]" />
-      </div>
+  const openingMatch = getOpeningMatch(matches);
+  const href = openingMatch ? `/match/${openingMatch.id}` : '/match/760415';
 
-      <div className="relative max-w-[24rem] sm:max-w-[32rem] md:max-w-[42rem]">
-        <p className="inline-flex rounded-full border border-[rgba(245,197,91,0.32)] bg-[rgba(245,197,91,0.13)] px-3 py-1 text-[0.68rem] font-black uppercase tracking-[0.18em] text-[var(--cw-primary)]">CupWatch 2026</p>
-        <h1 className="mt-3 max-w-[21rem] text-[2.45rem] font-black uppercase leading-[0.88] tracking-[-0.065em] sm:max-w-[28rem] sm:text-5xl md:max-w-[38rem] md:text-7xl">
+  return (
+    <MotionCard className="cw-hero min-h-[16.25rem] overflow-hidden p-4 text-white sm:min-h-[18rem] sm:p-6 md:min-h-[19rem] md:p-7">
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_72%_34%,rgba(245,197,91,0.18),transparent_32%),radial-gradient(ellipse_at_54%_105%,rgba(245,197,91,0.1),transparent_46%),linear-gradient(100deg,rgba(3,4,5,0.98)_0%,rgba(5,5,5,0.92)_52%,rgba(17,13,7,0.86)_100%)]" />
+        <div className="absolute inset-x-0 top-0 h-20 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),transparent)]" />
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,0.82))]" />
+        <div className="absolute right-0 top-8 h-28 w-[58%] bg-[repeating-linear-gradient(10deg,transparent_0_18px,rgba(245,197,91,0.055)_19px,transparent_21px)] opacity-60" />
+        <div className="absolute bottom-8 left-[42%] h-16 w-[62%] rounded-[50%] border-t border-[rgba(255,255,255,0.08)]" />
+      </div>
+      <AbstractCupVisual />
+
+      <div className="relative flex h-full max-w-[31rem] flex-col justify-center py-1 sm:max-w-[34rem] md:max-w-[42rem]">
+        <p className="inline-flex w-fit rounded-full border border-[rgba(245,197,91,0.36)] bg-[rgba(245,197,91,0.12)] px-3 py-1 text-[0.68rem] font-black uppercase tracking-[0.18em] text-[var(--cw-primary)] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">CupWatch 2026</p>
+        <h1 className="mt-3 max-w-[18rem] text-[2.18rem] font-black uppercase leading-[0.92] tracking-[-0.055em] min-[380px]:max-w-[21rem] min-[380px]:text-[2.55rem] sm:max-w-[30rem] sm:text-5xl md:max-w-[38rem] md:text-6xl">
           Mexico <span className="text-[var(--cw-primary)]">vs</span> South Africa
         </h1>
         <p className="mt-3 text-sm font-black text-slate-100 sm:text-base">Jun 11 · 1:00 PM MDT · Mexico City</p>
         <p className="mt-1.5 text-sm font-bold text-[var(--cw-primary)] sm:text-base">Group A · Opening Match</p>
-        <Link href="/match/760415" className="mt-4 inline-flex min-h-10 items-center rounded-[1rem] bg-[linear-gradient(135deg,var(--cw-primary),var(--cw-amber))] px-4 py-2 text-xs font-black uppercase tracking-wide text-[#120d03] shadow-[var(--cw-glow-green)] transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cw-primary)] sm:min-h-11 sm:px-5 sm:text-sm">
+        <Link href={href} className="mt-4 inline-flex min-h-10 w-fit items-center rounded-[0.95rem] bg-[linear-gradient(135deg,var(--cw-primary),var(--cw-amber))] px-4 py-2 text-xs font-black uppercase tracking-wide text-[#120d03] shadow-[var(--cw-glow-green)] transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cw-primary)] sm:min-h-11 sm:px-5 sm:text-sm">
           {isLoading ? 'Loading Match' : 'View Match'}
           <span className="ml-2 grid size-5 place-items-center rounded-full border border-[#120d03]/35">›</span>
         </Link>
@@ -326,26 +346,26 @@ function HeroCard({ matches, isLoading }: { matches: Match[]; now: Date; isLoadi
 
 function MatchMiniCard({ match, index }: { match: Match; index: number }) {
   return (
-    <Link href={`/match/${match.id}`} className="block min-w-[12.5rem] sm:min-w-[13.75rem] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cw-primary)]" aria-label={`View details for ${match.homeTeam.name} vs ${match.awayTeam.name}`}>
-      <BrandedMatchCard delay={index * 0.04} className="p-2.5 text-center text-white sm:p-3">
+    <Link href={`/match/${match.id}`} className="block min-w-[13.75rem] sm:min-w-[15.75rem] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cw-primary)]" aria-label={`View details for ${match.homeTeam.name} vs ${match.awayTeam.name}`}>
+      <BrandedMatchCard delay={index * 0.04} className="min-h-[8.25rem] p-3 text-center text-white">
         <div className="mb-2 flex items-center justify-between gap-2">
           <span className="truncate text-[0.65rem] font-black uppercase tracking-wide text-slate-400">{deriveStageLabel(match)}</span>
           <span className="text-[var(--cw-primary)]" aria-hidden="true">★</span>
         </div>
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-          <div className="min-w-0">
-            <TeamBadge name={match.homeTeam.name} logo={match.homeTeam.logo} />
-            <p className="mt-1 truncate text-base font-black">{match.homeTeam.abbreviation}</p>
+          <div className="grid min-w-0 justify-items-center">
+            <TeamBadge name={match.homeTeam.name} logo={match.homeTeam.logo} size="sm" />
+            <p className="mt-1 truncate text-base font-black leading-none">{match.homeTeam.abbreviation}</p>
           </div>
           <span className="text-xs font-black uppercase text-slate-500">vs</span>
-          <div className="min-w-0">
-            <TeamBadge name={match.awayTeam.name} logo={match.awayTeam.logo} />
-            <p className="mt-1 truncate text-base font-black">{match.awayTeam.abbreviation}</p>
+          <div className="grid min-w-0 justify-items-center">
+            <TeamBadge name={match.awayTeam.name} logo={match.awayTeam.logo} size="sm" />
+            <p className="mt-1 truncate text-base font-black leading-none">{match.awayTeam.abbreviation}</p>
           </div>
         </div>
-        <div className="mt-2 rounded-xl bg-black/35 px-2.5 py-1.5 text-xs font-bold leading-5 text-slate-300">
-          <p className="text-sm font-black text-white">{match.status === 'pre' ? formatKickoff(match.date) : getScore(match)}</p>
-          <p className="truncate">{getVenueCity(match)}</p>
+        <div className="mt-2 text-xs font-bold leading-5 text-slate-300">
+          <p className="text-[0.95rem] font-black text-white">{match.status === 'pre' ? formatKickoff(match.date) : getScore(match)}</p>
+          <p className="truncate uppercase tracking-wide text-slate-400">⌖ {getVenueCity(match)}</p>
         </div>
       </BrandedMatchCard>
     </Link>
@@ -362,15 +382,15 @@ function NextMatchesSection({ matches, now, isLoading }: { matches: Match[]; now
 
   return (
     <section>
-      <SectionHeader eyebrow={label} title="Next Matches" href="/schedule" linkText="Full schedule →" />
+      <SectionHeader eyebrow={label} title="Next Matches" href="/schedule" linkText="Full Schedule ›" />
       {isLoading ? (
-        <div className="flex gap-4 overflow-hidden">
-          <LoadingPanel className="h-36 min-w-[13rem]" />
-          <LoadingPanel className="h-36 min-w-[13rem]" />
+        <div className="flex gap-3 overflow-hidden">
+          <LoadingPanel className="h-32 min-w-[14rem]" />
+          <LoadingPanel className="h-32 min-w-[14rem]" />
         </div>
       ) : featuredMatches.length ? (
         <div className="-mx-4 flex snap-x gap-2.5 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:px-1">
-          {featuredMatches.map((match, index) => (
+          {featuredMatches.slice(0, 6).map((match, index) => (
             <div key={match.id} className="snap-start">
               <MatchMiniCard match={match} index={index} />
             </div>
@@ -388,10 +408,10 @@ function StandingsPreview({ groups, isLoading }: { groups: GroupStanding[]; isLo
 
   return (
     <section>
-      <SectionHeader eyebrow="Tables" title="Standings Preview" href="/standings" linkText="View All Groups →" />
+      <SectionHeader eyebrow="Tables" title="Standings Preview" href="/standings" linkText="View All Groups ›" />
       <CupCard className="overflow-hidden p-3 text-white sm:p-4">
         {isLoading ? (
-          <LoadingPanel className="h-48" />
+          <LoadingPanel className="h-44" />
         ) : groups.length && activeGroup ? (
           <div className="overflow-x-auto">
             <div className="mb-1 px-1 text-base font-black uppercase tracking-wide text-[var(--cw-primary)]">{activeGroup.group}</div>
@@ -441,13 +461,13 @@ function FavoritesCountdownRow({ matches, favorites, onToggleFavorite, isLoading
   const countdown = countdownParts(now);
 
   return (
-    <section className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 lg:gap-4">
+    <section className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:gap-4">
       <CupCard className="p-3 text-white sm:p-4">
         <div className="flex items-start justify-between gap-2">
           <h2 className="text-lg font-black uppercase tracking-tight">My Favorites</h2>
           <a href="#team-picker" className="rounded-full px-2 py-1 text-sm font-black text-[var(--cw-primary)] hover:text-white">Manage</a>
         </div>
-        <div className="mt-3 flex flex-wrap gap-3">
+        <div className="mt-3 flex flex-wrap gap-4">
           {displayTeams.map((team) => (
             <div key={team.abbreviation} className="relative text-center">
               <TeamBadge name={team.name} logo={team.logo} />
@@ -493,17 +513,19 @@ function FavoritesCountdownRow({ matches, favorites, onToggleFavorite, isLoading
 function NewsPreview({ news, isLoading }: { news: NewsArticle[]; isLoading: boolean }) {
   return (
     <section>
-      <SectionHeader eyebrow="Briefing" title="Latest News" href="/news" linkText="See All →" />
+      <SectionHeader eyebrow="Briefing" title="Latest News" href="/news" linkText="See All ›" />
       {isLoading ? (
-        <div className="grid gap-3 lg:grid-cols-3">
-          <LoadingPanel className="h-28" />
-          <LoadingPanel className="h-28" />
-          <LoadingPanel className="h-28" />
+        <div className="flex gap-3 overflow-hidden lg:grid lg:grid-cols-3">
+          <LoadingPanel className="h-52 min-w-[15.5rem]" />
+          <LoadingPanel className="h-52 min-w-[15.5rem]" />
+          <LoadingPanel className="h-52 min-w-[15.5rem]" />
         </div>
       ) : news.length ? (
-        <div className="grid gap-3 lg:grid-cols-3">
+        <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:px-0 lg:grid lg:grid-cols-3 lg:overflow-visible">
           {news.slice(0, 3).map((item, index) => (
-            <NewsPreviewCard key={item.id} article={item} delay={index * 0.04} />
+            <div key={item.id} className="min-w-[15.5rem] snap-start lg:min-w-0">
+              <NewsPreviewCard article={item} delay={index * 0.04} index={index} />
+            </div>
           ))}
         </div>
       ) : (
@@ -513,18 +535,33 @@ function NewsPreview({ news, isLoading }: { news: NewsArticle[]; isLoading: bool
   );
 }
 
+function SafeNewsThumb({ index }: { index: number }) {
+  const overlays = [
+    'from-[rgba(245,197,91,0.32)] via-transparent to-[rgba(0,0,0,0.12)]',
+    'from-[rgba(217,149,47,0.26)] via-transparent to-[rgba(0,0,0,0.18)]',
+    'from-[rgba(255,235,180,0.2)] via-transparent to-[rgba(0,0,0,0.2)]',
+  ];
 
-function NewsPreviewCard({ article, delay }: { article: NewsArticle; delay: number }) {
+  return (
+    <div className={`relative h-28 overflow-hidden bg-[#14110a] bg-[radial-gradient(circle_at_26%_30%,rgba(245,197,91,0.34),transparent_22%),radial-gradient(circle_at_74%_42%,rgba(255,255,255,0.1),transparent_18%),linear-gradient(135deg,rgba(245,197,91,0.09),rgba(255,255,255,0.035))]`} aria-hidden="true">
+      <div className={`absolute inset-0 bg-gradient-to-br ${overlays[index % overlays.length]}`} />
+      <div className="absolute left-5 top-5 h-10 w-10 rounded-full border border-[rgba(245,197,91,0.34)]" />
+      <div className="absolute bottom-4 left-0 right-0 h-px bg-[linear-gradient(90deg,transparent,rgba(245,197,91,0.75),transparent)]" />
+      <div className="absolute bottom-0 left-1/2 h-16 w-40 -translate-x-1/2 rounded-t-[50%] border-t border-white/10" />
+    </div>
+  );
+}
+
+function NewsPreviewCard({ article, delay, index }: { article: NewsArticle; delay: number; index: number }) {
   const card = (
-    <CupCard delay={delay} hover className="flex h-full overflow-hidden text-white">
-      {article.image ? <img src={article.image} alt="" className="h-auto w-24 shrink-0 object-cover sm:w-28" loading="lazy" /> : <div className="w-24 shrink-0 bg-[radial-gradient(circle_at_40%_35%,rgba(245,197,91,0.28),transparent_55%),rgba(255,255,255,0.05)] sm:w-28" />}
+    <CupCard delay={delay} hover className="h-full overflow-hidden text-white">
+      <SafeNewsThumb index={index} />
       <div className="min-w-0 p-3">
         <div className="mb-2 flex items-center justify-between gap-3 text-[0.62rem] font-black uppercase tracking-wide text-slate-400">
           <span>CupWatch</span>
           {article.publishedAt ? <time dateTime={article.publishedAt}>{formatNewsDate(article.publishedAt)}</time> : null}
         </div>
-        <h3 className="line-clamp-2 text-sm font-black leading-tight sm:text-base">{article.title}</h3>
-        {article.description ? <p className="mt-1.5 line-clamp-2 text-xs leading-5 text-slate-300">{article.description}</p> : null}
+        <h3 className="line-clamp-3 text-sm font-black leading-tight sm:text-base">{article.title}</h3>
       </div>
     </CupCard>
   );

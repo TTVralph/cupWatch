@@ -2,15 +2,29 @@ import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 import { BottomNav } from '@/components/BottomNav';
 import { Header } from '@/components/Header';
+import { PwaRegistration } from '@/components/PwaRegistration';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'CupWatch | World Cup 2026 Companion',
-  description: 'A fast, clean, mobile-first companion for World Cup 2026 matches, standings, bracket, and news.',
+  applicationName: 'CupWatch',
+  title: {
+    default: 'CupWatch | World Cup 2026 Companion',
+    template: '%s | CupWatch',
+  },
+  description: 'A clean World Cup 2026 companion app',
+  manifest: '/manifest.webmanifest',
+  icons: {
+    icon: [{ url: '/icons/icon.svg', type: 'image/svg+xml' }],
+  },
+  appleWebApp: {
+    capable: true,
+    title: 'CupWatch',
+    statusBarStyle: 'black-translucent',
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: '#059669',
+  themeColor: '#020617',
   width: 'device-width',
   initialScale: 1,
 };
@@ -22,6 +36,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
         <Header />
         {children}
         <BottomNav />
+        <PwaRegistration />
       </body>
     </html>
   );

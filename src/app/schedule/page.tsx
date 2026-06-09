@@ -1,8 +1,10 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { MotionCard } from '@/components/MotionCard';
 import { PageShell } from '@/components/PageShell';
+import { deriveStageLabel, locationText, scoreText, tournamentDateKey } from '@/lib/match-utils';
 import type { Match, MatchStatus } from '@/types/match';
 
 type MatchesApiResponse = {
@@ -74,48 +76,6 @@ function localDateKey(date: string) {
   return `${year}-${month}-${day}`;
 }
 
-function tournamentDateKey(date: string) {
-  return date.slice(0, 10);
-}
-
-function isBetween(value: string, start: string, end: string) {
-  return value >= start && value <= end;
-}
-
-function deriveStageLabel(match: Match) {
-  const tournamentDate = tournamentDateKey(match.date);
-
-  if (tournamentDate < '2026-06-28') return 'Group Stage';
-  if (isBetween(tournamentDate, '2026-06-28', '2026-07-03')) return 'Round of 32';
-  if (isBetween(tournamentDate, '2026-07-04', '2026-07-07')) return 'Round of 16';
-  if (isBetween(tournamentDate, '2026-07-09', '2026-07-12')) return 'Quarter-finals';
-  if (isBetween(tournamentDate, '2026-07-14', '2026-07-15')) return 'Semi-finals';
-  if (tournamentDate === '2026-07-18') return 'Third-place match';
-  if (tournamentDate === '2026-07-19') return 'Final';
-
-  return cleanRoundLabel(match.round) ?? 'World Cup';
-}
-
-function cleanRoundLabel(round?: string) {
-  if (!round) return null;
-  if (round.includes('@')) return null;
-  if (/\bRD\d+\b/i.test(round)) return null;
-  return round;
-}
-
-function hasScore(match: Match) {
-  return match.homeTeam.score !== undefined || match.awayTeam.score !== undefined;
-}
-
-function scoreText(match: Match) {
-  if (!hasScore(match)) return null;
-  return `${match.homeTeam.score ?? 0} - ${match.awayTeam.score ?? 0}`;
-}
-
-function locationText(match: Match) {
-  return [match.venue, [match.city, match.country].filter(Boolean).join(', ')].filter(Boolean).join(' · ');
-}
-
 function teamMatches(match: Match, filter: Exclude<ScheduleFilter, 'all' | 'knockout'>) {
   const aliases: Record<Exclude<ScheduleFilter, 'all' | 'knockout'>, string[]> = {
     canada: ['canada', 'can'],
@@ -173,7 +133,8 @@ function MatchCard({ match, index }: { match: Match; index: number }) {
   const location = locationText(match);
 
   return (
-    <MotionCard delay={Math.min(index * 0.02, 0.18)} className="rounded-[1.5rem] border border-white/80 bg-white p-4 shadow-sm shadow-slate-200/80">
+    <Link href={`/match/${match.id}`} className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2" aria-label={`View details for ${match.homeTeam.name} vs ${match.awayTeam.name}`}>
+      <MotionCard delay={Math.min(index * 0.02, 0.18)} className="rounded-[1.5rem] border border-white/80 bg-white p-4 shadow-sm shadow-slate-200/80 transition hover:-translate-y-0.5 hover:shadow-md hover:shadow-slate-300/70">
       <div className="mb-3 flex items-start justify-between gap-3">
         <div>
           <p className="text-lg font-black text-slate-950">{formatLocalTime(match.date)}</p>
@@ -205,7 +166,8 @@ function MatchCard({ match, index }: { match: Match; index: number }) {
         {location ? <p>{location}</p> : null}
         {match.broadcasts?.length ? <p>Broadcasts: {match.broadcasts.join(', ')}</p> : null}
       </div>
-    </MotionCard>
+      </MotionCard>
+    </Link>
   );
 }
 

@@ -1,8 +1,10 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { MotionCard } from '@/components/MotionCard';
 import { PageShell } from '@/components/PageShell';
+import { isBetween, tournamentDateKey } from '@/lib/match-utils';
 import type { Match, MatchStatus } from '@/types/match';
 
 type MatchesApiResponse = {
@@ -51,14 +53,6 @@ const timeFormatter = new Intl.DateTimeFormat('en-US', {
   minute: '2-digit',
   timeZoneName: 'short',
 });
-
-function tournamentDateKey(date: string) {
-  return date.slice(0, 10);
-}
-
-function isBetween(value: string, start: string, end: string) {
-  return value >= start && value <= end;
-}
 
 function getStageId(match: Match): BracketStageId | null {
   const tournamentDate = tournamentDateKey(match.date);
@@ -134,7 +128,8 @@ function BracketMatchCard({ match, index }: { match: Match; index: number }) {
   const hasScore = match.homeTeam.score !== undefined || match.awayTeam.score !== undefined;
 
   return (
-    <MotionCard delay={index * 0.04} className="rounded-[1.5rem] border border-white/80 bg-white p-4 shadow-sm shadow-slate-200/80">
+    <Link href={`/match/${match.id}`} className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2" aria-label={`View details for ${displayTeamName(match, 'home')} vs ${displayTeamName(match, 'away')}`}>
+      <MotionCard delay={index * 0.04} className="rounded-[1.5rem] border border-white/80 bg-white p-4 shadow-sm shadow-slate-200/80 transition hover:-translate-y-0.5 hover:shadow-md hover:shadow-slate-300/70">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
           <p className="text-sm font-black text-slate-950">{formatDate(match.date)}</p>
@@ -165,7 +160,8 @@ function BracketMatchCard({ match, index }: { match: Match; index: number }) {
         <p className="font-black text-slate-950">{match.statusText}</p>
         {location ? <p>{location}</p> : null}
       </div>
-    </MotionCard>
+      </MotionCard>
+    </Link>
   );
 }
 

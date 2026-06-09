@@ -17,7 +17,7 @@ function formatGoalDifference(goalDifference: number) {
 }
 
 function LoadingTable() {
-  return <div className="h-72 animate-pulse rounded-[1.5rem] bg-white/80 shadow-sm shadow-slate-200/80" />;
+  return <div className="h-72 animate-pulse rounded-[1.5rem] bg-white/[0.08] shadow-lg shadow-slate-950/20" />;
 }
 
 function groupLetter(groupName: string) {
@@ -26,14 +26,14 @@ function groupLetter(groupName: string) {
 
 function StandingsTable({ group, index }: { group: GroupStanding; index: number }) {
   return (
-    <MotionCard delay={index * 0.05} className="overflow-hidden rounded-[1.5rem] border border-white/80 bg-white shadow-sm shadow-slate-200/80">
-      <div className="flex items-center justify-between border-b border-slate-100 px-4 py-4">
-        <h2 className="text-lg font-black text-slate-950">{group.group}</h2>
-        <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">Top teams advance</span>
+    <MotionCard delay={index * 0.05} className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.08] text-slate-100 shadow-sm shadow-slate-200/80">
+      <div className="flex items-center justify-between border-b border-white/10 px-4 py-4">
+        <h2 className="text-lg font-black text-white">{group.group}</h2>
+        <span className="rounded-full bg-emerald-300/10 px-3 py-1 text-xs font-black text-emerald-200">Top teams advance</span>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[520px] text-left text-sm">
-          <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+          <thead className="bg-white/[0.06] text-xs uppercase tracking-wide text-slate-500">
             <tr>
               <th className="px-4 py-3">Team</th>
               <th className="px-2 py-3 text-center">P</th>
@@ -44,10 +44,10 @@ function StandingsTable({ group, index }: { group: GroupStanding; index: number 
               <th className="px-4 py-3 text-center">Pts</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-white/10">
             {group.rows.map((row) => (
-              <tr key={row.code} className="text-slate-700">
-                <td className="px-4 py-3 font-bold text-slate-950">
+              <tr key={row.code} className="text-slate-300">
+                <td className="px-4 py-3 font-bold text-white">
                   <span className="mr-2">{row.flag}</span>
                   {row.team}
                 </td>
@@ -56,7 +56,7 @@ function StandingsTable({ group, index }: { group: GroupStanding; index: number 
                 <td className="px-2 py-3 text-center">{row.draws}</td>
                 <td className="px-2 py-3 text-center">{row.losses}</td>
                 <td className="px-2 py-3 text-center">{formatGoalDifference(row.goalDifference)}</td>
-                <td className="px-4 py-3 text-center font-black text-slate-950">{row.points}</td>
+                <td className="px-4 py-3 text-center font-black text-white">{row.points}</td>
               </tr>
             ))}
           </tbody>
@@ -92,7 +92,7 @@ export default function StandingsPage() {
 
         setGroups(payload.data);
         setSelectedGroup((currentGroup) => currentGroup ?? payload.data[0]?.group ?? null);
-        setFallbackMessage(payload.fallback ? payload.message ?? 'Showing fallback group tables while live data is unavailable.' : null);
+        setFallbackMessage(payload.fallback ? payload.message ?? 'Showing saved group tables while live standings are unavailable.' : null);
       } catch (fetchError) {
         if (!isMounted) return;
         console.error('Unable to load standings:', fetchError);
@@ -114,9 +114,9 @@ export default function StandingsPage() {
   const selectedGroupData = useMemo(() => groups.find((group) => group.group === selectedGroup) ?? groups[0] ?? null, [groups, selectedGroup]);
 
   return (
-    <PageShell eyebrow="Standings" title="Group tables without the noise" description="Live ESPN group tables are served through CupWatch’s API layer, with calm fallback standings if the feed is unavailable.">
-      {fallbackMessage ? <div className="mb-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-bold text-amber-800">{fallbackMessage}</div> : null}
-      {error ? <div className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">{error}</div> : null}
+    <PageShell eyebrow="Standings" title="Group tables without the noise" description="Live group tables are served through CupWatch’s API layer, with calm saved standings if the feed is unavailable.">
+      {fallbackMessage ? <div className="mb-4 rounded-2xl border border-amber-300/30 bg-amber-300/10 px-4 py-3 text-sm font-bold text-amber-100">{fallbackMessage}</div> : null}
+      {error ? <div className="mb-4 rounded-2xl border border-red-300/30 bg-red-400/10 px-4 py-3 text-sm font-bold text-red-100">{error}</div> : null}
 
       {isLoading ? (
         <div className="grid gap-5 lg:grid-cols-2">
@@ -140,7 +140,7 @@ export default function StandingsPage() {
                         setShowAllGroups(false);
                       }}
                       className={`rounded-full px-4 py-2 text-sm font-black transition ${
-                        active ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'bg-white text-slate-600 shadow-sm shadow-slate-200/80 hover:text-slate-950'
+                        active ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'bg-white/[0.08] text-slate-300 shadow-lg shadow-slate-950/15 hover:bg-white/[0.12] hover:text-white'
                       }`}
                     >
                       {groupLetter(group.group)}
@@ -151,7 +151,7 @@ export default function StandingsPage() {
                   type="button"
                   onClick={() => setShowAllGroups((value) => !value)}
                   className={`rounded-full px-4 py-2 text-sm font-black transition ${
-                    showAllGroups ? 'bg-slate-950 text-white shadow-lg shadow-slate-950/15' : 'bg-white text-slate-600 shadow-sm shadow-slate-200/80 hover:text-slate-950'
+                    showAllGroups ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'bg-white/[0.08] text-slate-300 shadow-lg shadow-slate-950/15 hover:bg-white/[0.12] hover:text-white'
                   }`}
                 >
                   {showAllGroups ? 'One group' : 'Show all'}
@@ -178,7 +178,7 @@ export default function StandingsPage() {
           </div>
         </>
       ) : (
-        <div className="rounded-[1.5rem] border border-dashed border-slate-200 bg-white/70 px-4 py-6 text-sm font-bold text-slate-500">No standings are available right now.</div>
+        <div className="rounded-[1.5rem] border border-dashed border-white/15 bg-white/[0.06] px-4 py-6 text-sm font-bold text-slate-500">No standings are available right now.</div>
       )}
     </PageShell>
   );

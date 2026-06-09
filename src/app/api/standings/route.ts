@@ -27,7 +27,7 @@ export async function GET() {
         data: mockStandings,
         source: 'mock',
         fallback: true,
-        message: 'Live ESPN standings are temporarily unavailable, so CupWatch is showing fallback group tables.',
+        message: 'Live standings are temporarily unavailable, so CupWatch is showing saved group tables until the live feed returns.',
       },
       { headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=30' } },
     );

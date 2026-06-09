@@ -30,7 +30,7 @@ export async function GET() {
         data: mockNews,
         source: 'mock',
         fallback: true,
-        message: 'Live ESPN World Cup news is temporarily unavailable, so CupWatch is showing fallback news cards.',
+        message: 'Live news is temporarily unavailable, so CupWatch is showing saved headlines until the feed returns.',
       },
       { headers: cacheHeaders() },
     );

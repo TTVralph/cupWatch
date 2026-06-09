@@ -2,6 +2,19 @@ import type { BracketRound, GroupStanding, Match, NewsArticle } from '@/types/cu
 
 export const mockTodayMatches: Match[] = [
   {
+    id: '760415',
+    status: 'pre',
+    date: '2026-06-11T19:00:00Z',
+    statusText: 'Scheduled',
+    homeTeam: { name: 'Mexico', abbreviation: 'MEX' },
+    awayTeam: { name: 'South Africa', abbreviation: 'RSA' },
+    venue: 'Estadio Azteca',
+    city: 'Mexico City',
+    country: 'Mexico',
+    round: 'Group A',
+    broadcasts: ['FOX'],
+  },
+  {
     id: 'mex-kor',
     status: 'live',
     date: '2026-06-09T20:00:00Z',

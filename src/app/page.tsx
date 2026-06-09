@@ -3,7 +3,10 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { MotionCard } from '@/components/MotionCard';
+import { TeamPicker } from '@/components/TeamPicker';
+import { getTeamsFromMatches, matchInvolvesFavoriteTeam } from '@/lib/favorite-teams';
 import { deriveStageLabel } from '@/lib/match-utils';
+import { useFavoriteTeams } from '@/hooks/use-favorite-teams';
 import type { GroupStanding, NewsArticle } from '@/types/cupwatch';
 import type { Match, MatchStatus } from '@/types/match';
 
@@ -30,7 +33,6 @@ type LoadState = 'idle' | 'loading' | 'ready' | 'error';
 const TOURNAMENT_START = new Date('2026-06-11T00:00:00Z');
 const TOURNAMENT_END = new Date('2026-07-20T00:00:00Z');
 const OPENING_MATCH_HINT = 'Mexico vs South Africa';
-const FAVORITES_KEY = 'cupwatch.favoriteTeams';
 
 const statusLabels: Record<MatchStatus, string> = {
   live: 'Live',
@@ -402,38 +404,39 @@ function StandingsPreview({ groups, isLoading }: { groups: GroupStanding[]; isLo
   );
 }
 
-function FollowTeamsCard({ matches }: { matches: Match[] }) {
-  const [favorites, setFavorites] = useState<string[]>([]);
-  const teamOptions = useMemo(() => {
-    const teams = new Map<string, { name: string; abbreviation: string; logo?: string }>();
+function YourTeamsSection({ matches, now, favorites, isLoading }: { matches: Match[]; now: Date; favorites: string[]; isLoading: boolean }) {
+  const favoriteMatches = useMemo(
+    () => sortMatches(matches).filter((match) => match.status !== 'post' && new Date(match.date) >= now && matchInvolvesFavoriteTeam(match, favorites)).slice(0, 8),
+    [matches, now, favorites],
+  );
 
-    for (const match of matches) {
-      teams.set(match.homeTeam.abbreviation, match.homeTeam);
-      teams.set(match.awayTeam.abbreviation, match.awayTeam);
-    }
+  if (!favorites.length) return null;
 
-    return [...teams.values()].sort((a, b) => a.name.localeCompare(b.name)).slice(0, 16);
-  }, [matches]);
+  return (
+    <section>
+      <SectionHeader eyebrow={`${favorites.length} followed`} title="Your Teams" href="/schedule" linkText="See favorites →" />
+      {isLoading ? (
+        <div className="flex gap-4 overflow-hidden">
+          <LoadingPanel className="h-56 min-w-[17rem]" />
+          <LoadingPanel className="h-56 min-w-[17rem]" />
+        </div>
+      ) : favoriteMatches.length ? (
+        <div className="-mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:px-1">
+          {favoriteMatches.map((match, index) => (
+            <div key={match.id} className="snap-start">
+              <MatchMiniCard match={match} index={index} />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-[1.5rem] border border-dashed border-white/15 bg-white/[0.06] px-4 py-6 text-sm font-bold text-slate-300">No upcoming matches found for {favorites.join(', ')} yet.</div>
+      )}
+    </section>
+  );
+}
 
-  useEffect(() => {
-    const storedFavorites = window.localStorage.getItem(FAVORITES_KEY);
-    if (!storedFavorites) return;
-
-    try {
-      const parsedFavorites = JSON.parse(storedFavorites);
-      if (Array.isArray(parsedFavorites)) setFavorites(parsedFavorites.filter((item): item is string => typeof item === 'string'));
-    } catch {
-      window.localStorage.removeItem(FAVORITES_KEY);
-    }
-  }, []);
-
-  useEffect(() => {
-    window.localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
-  }, [favorites]);
-
-  function toggleFavorite(code: string) {
-    setFavorites((current) => (current.includes(code) ? current.filter((item) => item !== code) : [...current, code]));
-  }
+function FollowTeamsCard({ matches, favorites, onToggleFavorite, isLoading }: { matches: Match[]; favorites: string[]; onToggleFavorite: (teamCode: string) => void; isLoading: boolean }) {
+  const teamOptions = useMemo(() => getTeamsFromMatches(matches), [matches]);
 
   return (
     <MotionCard className="rounded-[1.5rem] border border-white/10 bg-[linear-gradient(135deg,rgba(16,185,129,0.16),rgba(255,255,255,0.07))] p-5 text-white shadow-lg shadow-slate-950/20">
@@ -441,32 +444,11 @@ function FollowTeamsCard({ matches }: { matches: Match[] }) {
       <h2 className="mt-2 text-2xl font-black">Follow your teams</h2>
       <p className="mt-2 text-sm leading-6 text-slate-300">Pick favorites on this device. No account, no login, and no extra feed clutter.</p>
 
-      <div className="mt-4 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {teamOptions.length ? (
-          teamOptions.map((team) => {
-            const selected = favorites.includes(team.abbreviation);
-            return (
-              <button
-                key={team.abbreviation}
-                type="button"
-                onClick={() => toggleFavorite(team.abbreviation)}
-                className={`flex shrink-0 items-center gap-2 rounded-full border px-3 py-2 text-xs font-black transition ${selected ? 'border-emerald-300 bg-emerald-300 text-slate-950' : 'border-white/10 bg-white/10 text-slate-200 hover:bg-white/15'}`}
-              >
-                <TeamBadge name={team.name} logo={team.logo} />
-                {team.abbreviation}
-              </button>
-            );
-          })
-        ) : (
-          ['MEX', 'USA', 'CAN', 'BRA', 'FRA', 'JPN'].map((code) => (
-            <button key={code} type="button" onClick={() => toggleFavorite(code)} className={`shrink-0 rounded-full border px-4 py-2 text-xs font-black transition ${favorites.includes(code) ? 'border-emerald-300 bg-emerald-300 text-slate-950' : 'border-white/10 bg-white/10 text-slate-200 hover:bg-white/15'}`}>
-              {code}
-            </button>
-          ))
-        )}
-      </div>
+      <TeamPicker teams={teamOptions} favorites={favorites} onToggle={onToggleFavorite} isLoading={isLoading} />
 
-      <p className="mt-3 text-xs font-bold text-slate-400">{favorites.length ? `${favorites.length} selected: ${favorites.join(', ')}` : 'Select teams to make matchdays easier to scan.'}</p>
+      <p className="mt-3 text-xs font-bold text-slate-400">
+        {favorites.length ? `${favorites.length} selected: ${favorites.join(', ')}` : 'Select teams to unlock a Your Teams match rail and schedule filter.'}
+      </p>
     </MotionCard>
   );
 }
@@ -538,6 +520,7 @@ export default function TodayPage() {
   const [standingsState, setStandingsState] = useState<LoadState>('idle');
   const [newsState, setNewsState] = useState<LoadState>('idle');
   const [notice, setNotice] = useState<string | null>(null);
+  const { favorites, toggleFavorite } = useFavoriteTeams();
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 60_000);
@@ -613,11 +596,13 @@ export default function TodayPage() {
         {notice ? <div className="rounded-2xl border border-amber-300/30 bg-amber-300/10 px-4 py-3 text-sm font-bold text-amber-100">{notice}</div> : null}
         {hasLoadError ? <div className="rounded-2xl border border-red-300/30 bg-red-500/10 px-4 py-3 text-sm font-bold text-red-100">Some dashboard sections could not load. Try refreshing in a moment.</div> : null}
 
+        <YourTeamsSection matches={matches} now={now} favorites={favorites} isLoading={matchesState === 'loading'} />
+
         <NextMatchesSection matches={matches} now={now} isLoading={matchesState === 'loading'} />
 
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(20rem,0.75fr)]">
           <StandingsPreview groups={groups} isLoading={standingsState === 'loading'} />
-          <FollowTeamsCard matches={matches} />
+          <FollowTeamsCard matches={matches} favorites={favorites} onToggleFavorite={toggleFavorite} isLoading={matchesState === 'loading'} />
         </div>
 
         <NewsPreview news={news} isLoading={newsState === 'loading'} />

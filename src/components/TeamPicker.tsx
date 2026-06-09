@@ -49,9 +49,9 @@ export function TeamPicker({ teams, favorites, onToggle, isLoading = false }: Te
             <TeamAvatar team={team} />
             <span className="min-w-0 flex-1">
               <span className="block truncate text-sm font-black">{team.name}</span>
-              <span className={`text-xs font-black uppercase tracking-wide ${selected ? 'text-slate-700' : 'text-slate-400'}`}>{team.abbreviation}</span>
+              <span className={`text-xs font-black uppercase tracking-wide ${selected ? 'text-slate-700' : 'text-slate-300'}`}>{team.abbreviation}</span>
             </span>
-            <span className={`rounded-full px-2 py-1 text-[0.65rem] font-black uppercase tracking-wide ${selected ? 'bg-slate-950 text-emerald-200' : 'bg-slate-950/35 text-slate-400'}`}>{selected ? 'Following' : 'Follow'}</span>
+            <span className={`rounded-full px-2 py-1 text-[0.65rem] font-black uppercase tracking-wide ${selected ? 'bg-slate-950 text-emerald-200' : 'bg-slate-950/35 text-slate-300'}`}>{selected ? 'Following' : 'Follow'}</span>
           </button>
         );
       })}

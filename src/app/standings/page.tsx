@@ -27,36 +27,36 @@ function groupLetter(groupName: string) {
 function StandingsTable({ group, index }: { group: GroupStanding; index: number }) {
   return (
     <CupCard delay={index * 0.05} className="overflow-hidden text-slate-100">
-      <div className="flex items-center justify-between border-b border-white/10 px-4 py-4">
-        <h2 className="text-lg font-black text-white">{group.group}</h2>
-        <span className="rounded-full bg-emerald-300/10 px-3 py-1 text-xs font-black text-emerald-200">Top teams advance</span>
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 px-3 py-3 sm:px-4 sm:py-4">
+        <h2 className="text-base font-black text-white sm:text-lg">{group.group}</h2>
+        <span className="rounded-full bg-emerald-300/10 px-3 py-1 text-[0.7rem] font-black text-emerald-100 sm:text-xs">Top teams advance</span>
       </div>
       <div className="overflow-x-auto">
-        <table className="cw-table w-full min-w-[520px] text-left text-sm">
-          <thead className="bg-white/[0.06] text-xs uppercase tracking-wide text-slate-500">
+        <table className="cw-table w-full table-fixed text-left text-xs sm:text-sm">
+          <thead className="bg-white/[0.06] text-[0.68rem] uppercase tracking-wide text-slate-300 sm:text-xs">
             <tr>
-              <th className="px-4 py-3">Team</th>
-              <th className="px-2 py-3 text-center">P</th>
-              <th className="px-2 py-3 text-center">W</th>
-              <th className="px-2 py-3 text-center">D</th>
-              <th className="px-2 py-3 text-center">L</th>
-              <th className="px-2 py-3 text-center">GD</th>
-              <th className="px-4 py-3 text-center">Pts</th>
+              <th className="w-[38%] px-3 py-3 sm:px-4">Team</th>
+              <th className="w-[9%] px-1 py-3 text-center">P</th>
+              <th className="w-[9%] px-1 py-3 text-center">W</th>
+              <th className="w-[9%] px-1 py-3 text-center">D</th>
+              <th className="w-[9%] px-1 py-3 text-center">L</th>
+              <th className="w-[11%] px-1 py-3 text-center">GD</th>
+              <th className="w-[15%] px-2 py-3 text-center sm:px-4">Pts</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/10">
             {group.rows.map((row) => (
-              <tr key={row.code} className="text-slate-300">
-                <td className="px-4 py-3 font-bold text-white">
-                  <span className="mr-2">{row.flag}</span>
-                  {row.team}
+              <tr key={row.code} className="text-slate-200">
+                <td className="px-3 py-3 font-bold text-white sm:px-4">
+                  <span className="mr-1.5">{row.flag}</span>
+                  <span className="align-middle leading-tight">{row.team}</span>
                 </td>
-                <td className="px-2 py-3 text-center">{row.played}</td>
-                <td className="px-2 py-3 text-center">{row.wins}</td>
-                <td className="px-2 py-3 text-center">{row.draws}</td>
-                <td className="px-2 py-3 text-center">{row.losses}</td>
-                <td className="px-2 py-3 text-center">{formatGoalDifference(row.goalDifference)}</td>
-                <td className="px-4 py-3 text-center font-black text-white">{row.points}</td>
+                <td className="px-1 py-3 text-center">{row.played}</td>
+                <td className="px-1 py-3 text-center">{row.wins}</td>
+                <td className="px-1 py-3 text-center">{row.draws}</td>
+                <td className="px-1 py-3 text-center">{row.losses}</td>
+                <td className="px-1 py-3 text-center">{formatGoalDifference(row.goalDifference)}</td>
+                <td className="px-2 py-3 text-center font-black text-white sm:px-4">{row.points}</td>
               </tr>
             ))}
           </tbody>
@@ -158,7 +158,7 @@ export default function StandingsPage() {
                 </button>
               </div>
             </div>
-            <p className="mt-2 px-1 text-xs font-bold text-slate-500">Swipe Group A–L chips, or show every table when you want the full view.</p>
+            <p className="mt-2 px-1 text-xs font-bold text-slate-300">Swipe Group A–L chips, or show every table when you want the full view.</p>
           </div>
 
           <div className="md:hidden">
@@ -178,7 +178,7 @@ export default function StandingsPage() {
           </div>
         </>
       ) : (
-        <div className="rounded-[1.5rem] border border-dashed border-white/15 bg-white/[0.06] px-4 py-6 text-sm font-bold text-slate-500">No standings are available right now.</div>
+        <div className="rounded-[1.5rem] border border-dashed border-white/15 bg-white/[0.06] px-4 py-6 text-sm font-bold text-slate-300">No standings are available right now.</div>
       )}
     </PageShell>
   );

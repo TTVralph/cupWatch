@@ -117,7 +117,7 @@ function LoadingCard() {
 
 function EmptyStage({ label }: { label: string }) {
   return (
-    <div className="rounded-[1.5rem] border border-dashed border-white/15 bg-white/[0.06] px-4 py-8 text-center text-sm font-bold text-slate-400">
+    <div className="rounded-[1.5rem] border border-dashed border-white/15 bg-white/[0.06] px-4 py-8 text-center text-sm font-bold text-slate-300">
       {label} matches are not available yet.
     </div>
   );
@@ -129,11 +129,11 @@ function BracketMatchCard({ match, index }: { match: Match; index: number }) {
 
   return (
     <Link href={`/match/${match.id}`} className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2" aria-label={`View details for ${displayTeamName(match, 'home')} vs ${displayTeamName(match, 'away')}`}>
-      <BrandedMatchCard delay={index * 0.04} className="p-4 text-slate-100">
-      <div className="mb-4 flex items-start justify-between gap-3">
+      <BrandedMatchCard delay={index * 0.04} className="p-3.5 text-slate-100 sm:p-4">
+      <div className="mb-4 flex items-start justify-between gap-2 sm:gap-3">
         <div>
           <p className="text-sm font-black text-white">{formatDate(match.date)}</p>
-          <p className="text-xs font-bold text-slate-400">{formatTime(match.date)}</p>
+          <p className="text-xs font-bold text-slate-300">{formatTime(match.date)}</p>
         </div>
         <span className={`rounded-full px-3 py-1 text-[0.68rem] font-black uppercase tracking-wide ring-1 ${statusStyles[match.status]}`}>{statusLabels[match.status]}</span>
       </div>
@@ -142,7 +142,7 @@ function BracketMatchCard({ match, index }: { match: Match; index: number }) {
         <div className="flex min-w-0 items-center justify-between gap-3 rounded-2xl bg-white/[0.06] px-4 py-3">
           <div className="min-w-0">
             <p className="break-words text-sm font-black text-white">{displayTeamName(match, 'home')}</p>
-            <p className="text-xs font-bold text-slate-400">{displayTeamCode(match, 'home')}</p>
+            <p className="text-xs font-bold text-slate-300">{displayTeamCode(match, 'home')}</p>
           </div>
           {hasScore ? <span className="shrink-0 text-lg font-black text-white">{match.homeTeam.score ?? 0}</span> : null}
         </div>
@@ -150,13 +150,13 @@ function BracketMatchCard({ match, index }: { match: Match; index: number }) {
         <div className="flex min-w-0 items-center justify-between gap-3 rounded-2xl bg-white/[0.06] px-4 py-3">
           <div className="min-w-0">
             <p className="break-words text-sm font-black text-white">{displayTeamName(match, 'away')}</p>
-            <p className="text-xs font-bold text-slate-400">{displayTeamCode(match, 'away')}</p>
+            <p className="text-xs font-bold text-slate-300">{displayTeamCode(match, 'away')}</p>
           </div>
           {hasScore ? <span className="shrink-0 text-lg font-black text-white">{match.awayTeam.score ?? 0}</span> : null}
         </div>
       </div>
 
-      <div className="mt-4 space-y-1 text-sm font-semibold text-slate-300">
+      <div className="mt-4 space-y-1 text-sm font-semibold leading-5 text-slate-200">
         <p className="font-black text-white">{match.statusText}</p>
         {location ? <p>{location}</p> : null}
       </div>
@@ -231,7 +231,7 @@ export default function BracketPage() {
       {fallbackMessage ? <div className="mb-4 rounded-2xl border border-amber-300/30 bg-amber-300/10 px-4 py-3 text-sm font-bold text-amber-100">{fallbackMessage}</div> : null}
       {error ? <div className="mb-4 rounded-2xl border border-red-300/30 bg-red-400/10 px-4 py-3 text-sm font-bold text-red-100">{error}</div> : null}
 
-      <div className="mb-5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="-mx-1 mb-5 overflow-x-auto px-1 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <div className="flex min-w-max gap-2">
           {stages.map((stage) => {
             const active = selectedStage === stage.id;
@@ -263,19 +263,19 @@ export default function BracketPage() {
       ) : (
         <>
           <section className="md:hidden">
-            <h2 className="mb-3 px-1 text-sm font-black uppercase tracking-[0.2em] text-slate-400">{getStageLabel(selectedStage)}</h2>
+            <h2 className="mb-3 px-1 text-sm font-black uppercase tracking-[0.2em] text-slate-300">{getStageLabel(selectedStage)}</h2>
             <div className="space-y-3">
               {selectedMatches.length ? selectedMatches.map((match, index) => <BracketMatchCard key={match.id} match={match} index={index} />) : <EmptyStage label={getStageLabel(selectedStage)} />}
             </div>
           </section>
 
-          <div className="hidden gap-4 overflow-x-auto pb-3 snap-x md:flex">
+          <div className="hidden snap-x gap-4 overflow-x-auto pb-3 md:flex">
             {stages.map((stage, stageIndex) => {
               const stageMatches = matchesByStage.get(stage.id) ?? [];
 
               return (
-                <section key={stage.id} className="min-w-[300px] flex-1 snap-start">
-                  <h2 className="mb-3 px-1 text-sm font-black uppercase tracking-[0.2em] text-slate-400">{stage.label}</h2>
+                <section key={stage.id} className="min-w-[17.5rem] flex-1 snap-start lg:min-w-[18.5rem]">
+                  <h2 className="mb-3 px-1 text-sm font-black uppercase tracking-[0.2em] text-slate-300">{stage.label}</h2>
                   <div className="space-y-3">
                     {stageMatches.length ? stageMatches.map((match, matchIndex) => <BracketMatchCard key={match.id} match={match} index={stageIndex + matchIndex} />) : <EmptyStage label={stage.label} />}
                   </div>

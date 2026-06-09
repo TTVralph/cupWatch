@@ -298,31 +298,31 @@ function HeroCard({ matches, now, isLoading }: { matches: Match[]; now: Date; is
   const started = isTournamentStarted(now);
 
   return (
-    <MotionCard className="cw-hero overflow-hidden p-5 text-white md:p-8">
+    <MotionCard className="cw-hero overflow-hidden p-4 text-white sm:p-5 md:p-8">
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.3em] text-cyan-200">World Cup companion</p>
-          <h1 className="mt-3 text-4xl font-black tracking-tight md:text-6xl">CupWatch 2026</h1>
-          <p className="mt-3 text-sm font-semibold text-slate-300 md:text-base">{formatDateRange()} · Simple scores, tables, fixtures, and headlines.</p>
+          <p className="text-xs font-black uppercase tracking-[0.24em] text-cyan-100 sm:tracking-[0.3em]">World Cup companion</p>
+          <h1 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl md:text-6xl">CupWatch 2026</h1>
+          <p className="mt-3 text-sm font-semibold leading-6 text-slate-200 md:text-base">{formatDateRange()} · Simple scores, tables, fixtures, and headlines.</p>
         </div>
 
         {!started ? (
-          <div className="grid grid-cols-3 gap-2 rounded-[1.5rem] border border-white/10 bg-white/10 p-2 backdrop-blur">
+          <div className="grid grid-cols-3 gap-1.5 rounded-[1.35rem] border border-white/10 bg-white/10 p-1.5 backdrop-blur sm:gap-2 sm:rounded-[1.5rem] sm:p-2">
             {[
               ['Days', countdown.days],
               ['Hours', countdown.hours],
               ['Mins', countdown.minutes],
             ].map(([label, value]) => (
-              <div key={label} className="rounded-2xl bg-slate-950/45 px-4 py-3 text-center">
+              <div key={label} className="rounded-2xl bg-slate-950/45 px-3 py-3 text-center sm:px-4">
                 <p className="text-2xl font-black tabular-nums">{value}</p>
-                <p className="text-[0.65rem] font-black uppercase tracking-wide text-slate-400">{label}</p>
+                <p className="text-[0.65rem] font-black uppercase tracking-wide text-slate-300">{label}</p>
               </div>
             ))}
           </div>
         ) : null}
       </div>
 
-      <div className="mt-6 rounded-[1.5rem] border border-white/10 bg-white/10 p-4 backdrop-blur md:flex md:items-center md:justify-between md:gap-5">
+      <div className="mt-5 rounded-[1.35rem] border border-white/10 bg-white/10 p-3.5 backdrop-blur sm:p-4 md:mt-6 md:flex md:items-center md:justify-between md:gap-5">
         {isLoading ? (
           <LoadingPanel className="h-20 flex-1" />
         ) : (
@@ -330,7 +330,7 @@ function HeroCard({ matches, now, isLoading }: { matches: Match[]; now: Date; is
             <div>
               <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-200">{summary.eyebrow}</p>
               <h2 className="mt-2 text-2xl font-black leading-tight">{summary.title}</h2>
-              <p className="mt-2 text-sm font-semibold text-slate-300">{summary.detail}</p>
+              <p className="mt-2 text-sm font-semibold leading-6 text-slate-200">{summary.detail}</p>
             </div>
             <Link href="/schedule" className="mt-4 inline-flex rounded-full bg-white px-4 py-2 text-sm font-black text-slate-950 transition hover:bg-cyan-100 md:mt-0">
               View schedule
@@ -344,11 +344,11 @@ function HeroCard({ matches, now, isLoading }: { matches: Match[]; now: Date; is
 
 function MatchMiniCard({ match, index }: { match: Match; index: number }) {
   return (
-    <Link href={`/match/${match.id}`} className="block min-w-[17rem] focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300" aria-label={`View details for ${match.homeTeam.name} vs ${match.awayTeam.name}`}>
-      <BrandedMatchCard delay={index * 0.04} className="cw-ticket p-4 text-white">
+    <Link href={`/match/${match.id}`} className="block min-w-[16rem] sm:min-w-[17rem] focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300" aria-label={`View details for ${match.homeTeam.name} vs ${match.awayTeam.name}`}>
+      <BrandedMatchCard delay={index * 0.04} className="cw-ticket p-3.5 text-white sm:p-4">
       <div className="mb-4 flex items-center justify-between gap-3">
         <span className={`rounded-full border px-3 py-1 text-[0.65rem] font-black uppercase tracking-wide ${statusStyles[match.status]}`}>{statusLabels[match.status]}</span>
-        <span className="text-xs font-bold text-slate-400">{deriveStageLabel(match)}</span>
+        <span className="text-xs font-bold text-slate-300">{deriveStageLabel(match)}</span>
       </div>
 
       <div className="space-y-3">
@@ -357,14 +357,14 @@ function MatchMiniCard({ match, index }: { match: Match; index: number }) {
             <TeamBadge name={team.name} logo={team.logo} />
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-black">{team.name}</p>
-              <p className="text-xs font-bold text-slate-400">{team.abbreviation}</p>
+              <p className="text-xs font-bold text-slate-300">{team.abbreviation}</p>
             </div>
             {match.status !== 'pre' ? <span className="text-lg font-black tabular-nums">{team.score ?? 0}</span> : null}
           </div>
         ))}
       </div>
 
-      <div className="mt-4 rounded-2xl bg-slate-950/45 px-3 py-3 text-xs font-bold leading-5 text-slate-300">
+      <div className="mt-4 rounded-2xl bg-slate-950/45 px-3 py-3 text-xs font-bold leading-5 text-slate-200">
         <p>{match.status === 'pre' ? formatKickoff(match.date) : match.statusText}</p>
         <p>{getVenueCity(match)}</p>
       </div>
@@ -436,7 +436,7 @@ function StandingsPreview({ groups, isLoading }: { groups: GroupStanding[]; isLo
             </div>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[360px] text-left text-sm">
-                <thead className="text-xs uppercase tracking-wide text-slate-400">
+                <thead className="text-xs uppercase tracking-wide text-slate-300">
                   <tr>
                     <th className="px-4 py-3">Team</th>
                     <th className="px-2 py-3 text-center">P</th>
@@ -503,14 +503,14 @@ function FollowTeamsCard({ matches, favorites, onToggleFavorite, isLoading }: { 
   const teamOptions = useMemo(() => getTeamsFromMatches(matches), [matches]);
 
   return (
-    <CupCard className="p-5 text-white">
+    <CupCard className="p-4 text-white sm:p-5">
       <p className="text-xs font-black uppercase tracking-[0.24em] text-emerald-200">Personalize</p>
       <h2 className="mt-2 text-2xl font-black">Follow your teams</h2>
-      <p className="mt-2 text-sm leading-6 text-slate-300">Pick favorites on this device. No account, no login, and no extra feed clutter.</p>
+      <p className="mt-2 text-sm leading-6 text-slate-200">Pick favorites on this device. No account, no login, and no extra feed clutter.</p>
 
       <TeamPicker teams={teamOptions} favorites={favorites} onToggle={onToggleFavorite} isLoading={isLoading} />
 
-      <p className="mt-3 text-xs font-bold text-slate-400">
+      <p className="mt-3 text-xs font-bold text-slate-300">
         {favorites.length ? `${favorites.length} selected: ${favorites.join(', ')}` : 'Select teams to unlock a Your Teams match rail and schedule filter.'}
       </p>
     </CupCard>
@@ -522,13 +522,13 @@ function NewsPreview({ news, isLoading }: { news: NewsArticle[]; isLoading: bool
     <section>
       <SectionHeader eyebrow="Briefing" title="Latest News" href="/news" linkText="See more →" />
       {isLoading ? (
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <LoadingPanel className="h-44" />
           <LoadingPanel className="h-44" />
           <LoadingPanel className="h-44" />
         </div>
       ) : news.length ? (
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {news.slice(0, 3).map((item, index) => (
             <NewsPreviewCard key={item.id} article={item} delay={index * 0.04} />
           ))}
@@ -544,14 +544,14 @@ function NewsPreview({ news, isLoading }: { news: NewsArticle[]; isLoading: bool
 function NewsPreviewCard({ article, delay }: { article: NewsArticle; delay: number }) {
   const card = (
     <CupCard delay={delay} hover className="h-full overflow-hidden text-white">
-      {article.image ? <img src={article.image} alt="" className="h-32 w-full object-cover" loading="lazy" /> : null}
+      {article.image ? <img src={article.image} alt="" className="h-28 w-full object-cover sm:h-32" loading="lazy" /> : null}
       <div className="p-4">
-        <div className="mb-3 flex items-center justify-between gap-3 text-[0.65rem] font-black uppercase tracking-wide text-slate-400">
+        <div className="mb-3 flex items-center justify-between gap-3 text-[0.68rem] font-black uppercase tracking-wide text-slate-300">
           <span>{article.source ?? 'CupWatch'}</span>
           {article.publishedAt ? <time dateTime={article.publishedAt}>{formatNewsDate(article.publishedAt)}</time> : null}
         </div>
         <h3 className="text-lg font-black leading-tight">{article.title}</h3>
-        {article.description ? <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-300">{article.description}</p> : null}
+        {article.description ? <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-200">{article.description}</p> : null}
       </div>
     </CupCard>
   );

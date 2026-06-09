@@ -20,7 +20,7 @@ export default async function NewsPage() {
       {error ? <div className="mb-4 rounded-2xl border border-red-300/30 bg-red-400/10 px-4 py-3 text-sm font-bold text-red-100">{error}</div> : null}
 
       {news.length ? (
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {news.map((item, index) => (
             <NewsCard key={item.id} article={item} delay={index * 0.05} />
           ))}
@@ -74,14 +74,14 @@ async function getRequestOrigin() {
 function NewsCard({ article, delay }: { article: NewsArticle; delay: number }) {
   const card = (
     <CupCard delay={delay} hover className="h-full overflow-hidden">
-      {article.image ? <img src={article.image} alt="" className="h-40 w-full object-cover opacity-90" loading="lazy" /> : null}
-      <div className="p-5">
-        <div className="mb-4 flex items-center justify-between gap-3 text-xs font-black uppercase tracking-wide text-slate-400">
+      {article.image ? <img src={article.image} alt="" className="h-36 w-full object-cover opacity-90 sm:h-40" loading="lazy" /> : null}
+      <div className="p-4 sm:p-5">
+        <div className="mb-3 flex items-center justify-between gap-3 text-[0.7rem] font-black uppercase tracking-wide text-slate-300 sm:mb-4 sm:text-xs">
           <span>{article.source ?? 'CupWatch'}</span>
           {article.publishedAt ? <time dateTime={article.publishedAt}>{formatNewsDate(article.publishedAt)}</time> : null}
         </div>
-        <h2 className="text-xl font-black leading-tight text-white">{article.title}</h2>
-        {article.description ? <p className="mt-3 text-sm leading-6 text-slate-300">{article.description}</p> : null}
+        <h2 className="text-lg font-black leading-tight text-white sm:text-xl">{article.title}</h2>
+        {article.description ? <p className="mt-3 line-clamp-4 text-sm leading-6 text-slate-200">{article.description}</p> : null}
       </div>
     </CupCard>
   );

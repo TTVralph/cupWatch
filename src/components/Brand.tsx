@@ -41,13 +41,13 @@ export function Pill({ active = false, className = '', children }: PillProps) {
 
 export function SectionHeader({ eyebrow, title, href, linkText }: { eyebrow: string; title: string; href?: string; linkText?: string }) {
   return (
-    <div className="mb-4 flex items-end justify-between gap-3 px-1">
+    <div className="mb-2.5 flex items-end justify-between gap-3 px-0.5">
       <div>
-        <p className="cw-kicker">{eyebrow}</p>
-        <h2 className="cw-title mt-1 text-2xl md:text-3xl">{title}</h2>
+        <p className="sr-only">{eyebrow}</p>
+        <h2 className="cw-title text-xl uppercase md:text-2xl">{title}</h2>
       </div>
       {href && linkText ? (
-        <Link href={href} className="shrink-0 rounded-full px-2 py-2 text-sm font-black text-[var(--cw-primary)] transition hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cw-primary)]">
+        <Link href={href} className="shrink-0 rounded-full px-2 py-1 text-sm font-black text-[var(--cw-primary)] transition hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cw-primary)]">
           {linkText}
         </Link>
       ) : null}

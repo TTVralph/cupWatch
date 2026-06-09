@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { CupCard, MatchCard as BrandedMatchCard, SectionHeader } from '@/components/Brand';
 import { MotionCard } from '@/components/MotionCard';
 import { TeamPicker } from '@/components/TeamPicker';
-import { getTeamsFromMatches, matchInvolvesFavoriteTeam } from '@/lib/favorite-teams';
+import { getTeamsFromMatches } from '@/lib/favorite-teams';
 import { deriveStageLabel } from '@/lib/match-utils';
 import { useFavoriteTeams } from '@/hooks/use-favorite-teams';
 import type { GroupStanding, NewsArticle } from '@/types/cupwatch';
@@ -293,31 +293,31 @@ function TeamBadge({ name, logo }: { name: string; logo?: string }) {
 }
 
 function HeroCard({ matches, isLoading }: { matches: Match[]; now: Date; isLoading: boolean }) {
-  const openingMatch = getOpeningMatch(matches);
-  const matchHref = openingMatch ? `/match/${openingMatch.id}` : '/match/760415';
-
   return (
-    <MotionCard className="cw-hero overflow-hidden p-5 text-white sm:p-6 md:p-8">
+    <MotionCard className="cw-hero min-h-[18.75rem] overflow-hidden p-4 text-white sm:min-h-[20rem] sm:p-5 md:min-h-[22rem] md:p-8">
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute -right-10 top-6 h-44 w-44 rounded-full bg-[radial-gradient(circle,rgba(245,197,91,0.34),transparent_58%)] blur-sm md:h-64 md:w-64" />
-        <div className="absolute right-8 top-8 h-44 w-28 opacity-20 md:right-16 md:h-64 md:w-40">
-          <div className="mx-auto h-24 w-16 rounded-b-[2rem] rounded-t-lg border-[10px] border-[var(--cw-primary)] md:h-36 md:w-24" />
-          <div className="mx-auto h-16 w-5 bg-[var(--cw-primary)] md:h-22" />
-          <div className="mx-auto h-4 w-24 rounded-full bg-[var(--cw-primary)] md:w-36" />
+        <div className="absolute inset-y-0 right-0 w-[52%] bg-[radial-gradient(circle_at_70%_30%,rgba(245,197,91,0.34),transparent_26%),linear-gradient(90deg,transparent,rgba(0,0,0,0.18)_24%,rgba(217,149,47,0.22))]" />
+        <div className="absolute right-3 top-5 h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(245,197,91,0.26),transparent_58%)] blur-sm sm:right-10 sm:h-56 sm:w-56" />
+        <div className="absolute right-[-1.5rem] top-4 h-44 w-36 opacity-25 sm:right-10 sm:top-7 sm:h-56 sm:w-44 md:opacity-35">
+          <div className="mx-auto h-24 w-16 rounded-b-[2rem] rounded-t-lg border-[9px] border-[var(--cw-primary)] sm:h-32 sm:w-[5.5rem]" />
+          <div className="mx-auto h-14 w-5 bg-[var(--cw-primary)] sm:h-[4.5rem]" />
+          <div className="mx-auto h-3.5 w-24 rounded-full bg-[var(--cw-primary)] sm:w-32" />
         </div>
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,0.55))]" />
+        <div className="absolute right-6 top-11 h-px w-44 rotate-[-22deg] bg-[linear-gradient(90deg,transparent,rgba(255,236,182,0.9),transparent)] shadow-[0_0_18px_rgba(245,197,91,0.55)] sm:w-72" />
+        <div className="absolute right-0 top-24 h-px w-56 rotate-[-12deg] bg-[linear-gradient(90deg,transparent,rgba(245,197,91,0.5),transparent)] sm:w-80" />
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,0.72))]" />
       </div>
 
-      <div className="relative max-w-3xl">
-        <p className="inline-flex rounded-full border border-[rgba(245,197,91,0.32)] bg-[rgba(245,197,91,0.12)] px-3 py-1 text-xs font-black uppercase tracking-[0.22em] text-[var(--cw-primary)]">CupWatch 2026</p>
-        <h1 className="mt-4 text-4xl font-black uppercase leading-[0.95] tracking-tight sm:text-5xl md:text-7xl">
+      <div className="relative max-w-[24rem] sm:max-w-[32rem] md:max-w-[42rem]">
+        <p className="inline-flex rounded-full border border-[rgba(245,197,91,0.32)] bg-[rgba(245,197,91,0.13)] px-3 py-1 text-[0.68rem] font-black uppercase tracking-[0.18em] text-[var(--cw-primary)]">CupWatch 2026</p>
+        <h1 className="mt-3 max-w-[21rem] text-[2.45rem] font-black uppercase leading-[0.88] tracking-[-0.065em] sm:max-w-[28rem] sm:text-5xl md:max-w-[38rem] md:text-7xl">
           Mexico <span className="text-[var(--cw-primary)]">vs</span> South Africa
         </h1>
-        <p className="mt-4 text-base font-black text-slate-100 md:text-lg">Jun 11 · 1:00 PM MDT · Mexico City</p>
-        <p className="mt-2 text-sm font-bold text-[var(--cw-primary)] md:text-base">Group A · Opening Match</p>
-        <Link href={matchHref} className="mt-6 inline-flex min-h-12 items-center rounded-full bg-[linear-gradient(135deg,var(--cw-primary),var(--cw-amber))] px-5 py-3 text-sm font-black uppercase tracking-wide text-[#120d03] shadow-[var(--cw-glow-green)] transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cw-primary)]">
+        <p className="mt-3 text-sm font-black text-slate-100 sm:text-base">Jun 11 · 1:00 PM MDT · Mexico City</p>
+        <p className="mt-1.5 text-sm font-bold text-[var(--cw-primary)] sm:text-base">Group A · Opening Match</p>
+        <Link href="/match/760415" className="mt-4 inline-flex min-h-10 items-center rounded-[1rem] bg-[linear-gradient(135deg,var(--cw-primary),var(--cw-amber))] px-4 py-2 text-xs font-black uppercase tracking-wide text-[#120d03] shadow-[var(--cw-glow-green)] transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cw-primary)] sm:min-h-11 sm:px-5 sm:text-sm">
           {isLoading ? 'Loading Match' : 'View Match'}
-          <span className="ml-3 grid size-6 place-items-center rounded-full border border-[#120d03]/35">›</span>
+          <span className="ml-2 grid size-5 place-items-center rounded-full border border-[#120d03]/35">›</span>
         </Link>
       </div>
     </MotionCard>
@@ -326,24 +326,24 @@ function HeroCard({ matches, isLoading }: { matches: Match[]; now: Date; isLoadi
 
 function MatchMiniCard({ match, index }: { match: Match; index: number }) {
   return (
-    <Link href={`/match/${match.id}`} className="block min-w-[13.5rem] sm:min-w-[15rem] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cw-primary)]" aria-label={`View details for ${match.homeTeam.name} vs ${match.awayTeam.name}`}>
-      <BrandedMatchCard delay={index * 0.04} className="p-3 text-center text-white sm:p-3.5">
-        <div className="mb-3 flex items-center justify-between gap-2">
+    <Link href={`/match/${match.id}`} className="block min-w-[12.5rem] sm:min-w-[13.75rem] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cw-primary)]" aria-label={`View details for ${match.homeTeam.name} vs ${match.awayTeam.name}`}>
+      <BrandedMatchCard delay={index * 0.04} className="p-2.5 text-center text-white sm:p-3">
+        <div className="mb-2 flex items-center justify-between gap-2">
           <span className="truncate text-[0.65rem] font-black uppercase tracking-wide text-slate-400">{deriveStageLabel(match)}</span>
-          <span className={`rounded-full border px-2 py-0.5 text-[0.6rem] font-black uppercase tracking-wide ${statusStyles[match.status]}`}>{statusLabels[match.status]}</span>
+          <span className="text-[var(--cw-primary)]" aria-hidden="true">★</span>
         </div>
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
           <div className="min-w-0">
             <TeamBadge name={match.homeTeam.name} logo={match.homeTeam.logo} />
-            <p className="mt-2 truncate text-base font-black">{match.homeTeam.abbreviation}</p>
+            <p className="mt-1 truncate text-base font-black">{match.homeTeam.abbreviation}</p>
           </div>
           <span className="text-xs font-black uppercase text-slate-500">vs</span>
           <div className="min-w-0">
             <TeamBadge name={match.awayTeam.name} logo={match.awayTeam.logo} />
-            <p className="mt-2 truncate text-base font-black">{match.awayTeam.abbreviation}</p>
+            <p className="mt-1 truncate text-base font-black">{match.awayTeam.abbreviation}</p>
           </div>
         </div>
-        <div className="mt-3 rounded-2xl bg-black/35 px-3 py-2 text-xs font-bold leading-5 text-slate-300">
+        <div className="mt-2 rounded-xl bg-black/35 px-2.5 py-1.5 text-xs font-bold leading-5 text-slate-300">
           <p className="text-sm font-black text-white">{match.status === 'pre' ? formatKickoff(match.date) : getScore(match)}</p>
           <p className="truncate">{getVenueCity(match)}</p>
         </div>
@@ -365,11 +365,11 @@ function NextMatchesSection({ matches, now, isLoading }: { matches: Match[]; now
       <SectionHeader eyebrow={label} title="Next Matches" href="/schedule" linkText="Full schedule →" />
       {isLoading ? (
         <div className="flex gap-4 overflow-hidden">
-          <LoadingPanel className="h-56 min-w-[17rem]" />
-          <LoadingPanel className="h-56 min-w-[17rem]" />
+          <LoadingPanel className="h-36 min-w-[13rem]" />
+          <LoadingPanel className="h-36 min-w-[13rem]" />
         </div>
       ) : featuredMatches.length ? (
-        <div className="-mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:px-1">
+        <div className="-mx-4 flex snap-x gap-2.5 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:px-1">
           {featuredMatches.map((match, index) => (
             <div key={match.id} className="snap-start">
               <MatchMiniCard match={match} index={index} />
@@ -384,102 +384,52 @@ function NextMatchesSection({ matches, now, isLoading }: { matches: Match[]; now
 }
 
 function StandingsPreview({ groups, isLoading }: { groups: GroupStanding[]; isLoading: boolean }) {
-  const [selectedGroup, setSelectedGroup] = useState<string>('');
-
-  useEffect(() => {
-    if (!selectedGroup && groups[0]) setSelectedGroup(groups[0].group);
-    if (selectedGroup && groups.length && !groups.some((group) => group.group === selectedGroup)) setSelectedGroup(groups[0].group);
-  }, [groups, selectedGroup]);
-
-  const activeGroup = groups.find((group) => group.group === selectedGroup) ?? groups[0];
+  const activeGroup = groups.find((group) => group.group.toLowerCase() === 'group a') ?? groups[0];
 
   return (
     <section>
       <SectionHeader eyebrow="Tables" title="Standings Preview" href="/standings" linkText="View All Groups →" />
-      <CupCard className="overflow-hidden text-white">
+      <CupCard className="overflow-hidden p-3 text-white sm:p-4">
         {isLoading ? (
-          <LoadingPanel className="h-72" />
+          <LoadingPanel className="h-48" />
         ) : groups.length && activeGroup ? (
-          <>
-            <div className="flex gap-2 overflow-x-auto border-b border-white/10 p-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {groups.map((group) => (
-                <button
-                  key={group.group}
-                  type="button"
-                  onClick={() => setSelectedGroup(group.group)}
-                  className={`shrink-0 rounded-full px-3 py-2 text-xs font-black transition ${activeGroup.group === group.group ? 'bg-[var(--cw-primary)] text-[#120d03]' : 'bg-white/10 text-slate-300 hover:bg-white/15 hover:text-white'}`}
-                >
-                  {group.group}
-                </button>
-              ))}
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[360px] text-left text-sm">
-                <thead className="text-xs uppercase tracking-wide text-slate-300">
-                  <tr>
-                    <th className="px-4 py-3">Team</th>
-                    <th className="px-1 py-3 text-center">P</th>
-                    <th className="px-1 py-3 text-center">W</th>
-                    <th className="px-1 py-3 text-center">D</th>
-                    <th className="px-1 py-3 text-center">L</th>
-                    <th className="px-1 py-3 text-center">GD</th>
-                    <th className="px-3 py-3 text-center text-[var(--cw-primary)]">PTS</th>
+          <div className="overflow-x-auto">
+            <div className="mb-1 px-1 text-base font-black uppercase tracking-wide text-[var(--cw-primary)]">{activeGroup.group}</div>
+            <table className="w-full min-w-[350px] text-left text-sm">
+              <thead className="text-[0.68rem] uppercase tracking-wide text-slate-400">
+                <tr>
+                  <th className="px-1 py-1.5">Team</th>
+                  <th className="px-1 py-1.5 text-center">P</th>
+                  <th className="px-1 py-1.5 text-center">W</th>
+                  <th className="px-1 py-1.5 text-center">D</th>
+                  <th className="px-1 py-1.5 text-center">L</th>
+                  <th className="px-1 py-1.5 text-center">GD</th>
+                  <th className="px-1 py-1.5 text-center text-[var(--cw-primary)]">PTS</th>
+                </tr>
+              </thead>
+              <tbody>
+                {activeGroup.rows.slice(0, 4).map((row, index) => (
+                  <tr key={row.code} className="border-t border-white/8">
+                    <td className="px-1 py-1.5 font-bold">
+                      <span className="mr-2 text-xs text-slate-300">{index + 1}</span>
+                      <span className="mr-2">{row.flag}</span>
+                      <span>{row.team}</span>
+                    </td>
+                    <td className="px-1 py-1.5 text-center text-slate-200">{row.played}</td>
+                    <td className="px-1 py-1.5 text-center text-slate-200">{row.wins}</td>
+                    <td className="px-1 py-1.5 text-center text-slate-200">{row.draws}</td>
+                    <td className="px-1 py-1.5 text-center text-slate-200">{row.losses}</td>
+                    <td className="px-1 py-1.5 text-center text-slate-200">{formatGoalDifference(row.goalDifference)}</td>
+                    <td className="px-1 py-1.5 text-center font-black text-[var(--cw-primary)]">{row.points}</td>
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-white/10">
-                  {activeGroup.rows.map((row) => (
-                    <tr key={row.code}>
-                      <td className="px-4 py-3 font-bold">
-                        <span className="mr-2">{row.flag}</span>
-                        <span>{row.team}</span>
-                      </td>
-                      <td className="px-1 py-3 text-center text-slate-300">{row.played}</td>
-                      <td className="px-1 py-3 text-center text-slate-300">{row.wins}</td>
-                      <td className="px-1 py-3 text-center text-slate-300">{row.draws}</td>
-                      <td className="px-1 py-3 text-center text-slate-300">{row.losses}</td>
-                      <td className="px-1 py-3 text-center text-slate-300">{formatGoalDifference(row.goalDifference)}</td>
-                      <td className="px-3 py-3 text-center font-black text-[var(--cw-primary)]">{row.points}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : (
-          <div className="px-4 py-6 text-sm font-bold text-slate-300">No standings are available right now.</div>
+          <div className="px-2 py-4 text-sm font-bold text-slate-300">No standings are available right now.</div>
         )}
       </CupCard>
-    </section>
-  );
-}
-
-function YourTeamsSection({ matches, now, favorites, isLoading }: { matches: Match[]; now: Date; favorites: string[]; isLoading: boolean }) {
-  const favoriteMatches = useMemo(
-    () => sortMatches(matches).filter((match) => match.status !== 'post' && new Date(match.date) >= now && matchInvolvesFavoriteTeam(match, favorites)).slice(0, 8),
-    [matches, now, favorites],
-  );
-
-  if (!favorites.length) return null;
-
-  return (
-    <section>
-      <SectionHeader eyebrow={`${favorites.length} followed`} title="Your Teams" href="/schedule" linkText="See favorites →" />
-      {isLoading ? (
-        <div className="flex gap-4 overflow-hidden">
-          <LoadingPanel className="h-56 min-w-[17rem]" />
-          <LoadingPanel className="h-56 min-w-[17rem]" />
-        </div>
-      ) : favoriteMatches.length ? (
-        <div className="-mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:px-1">
-          {favoriteMatches.map((match, index) => (
-            <div key={match.id} className="snap-start">
-              <MatchMiniCard match={match} index={index} />
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="rounded-[1.5rem] border border-dashed border-white/15 bg-white/[0.06] px-4 py-6 text-sm font-bold text-slate-300">No upcoming matches found for {favorites.join(', ')} yet.</div>
-      )}
     </section>
   );
 }
@@ -487,55 +437,52 @@ function YourTeamsSection({ matches, now, favorites, isLoading }: { matches: Mat
 function FavoritesCountdownRow({ matches, favorites, onToggleFavorite, isLoading, now }: { matches: Match[]; favorites: string[]; onToggleFavorite: (teamCode: string) => void; isLoading: boolean; now: Date }) {
   const teamOptions = useMemo(() => getTeamsFromMatches(matches), [matches]);
   const favoriteTeams = teamOptions.filter((team) => favorites.includes(team.abbreviation));
+  const displayTeams = favoriteTeams.length ? favoriteTeams : teamOptions.slice(0, 3);
   const countdown = countdownParts(now);
 
   return (
-    <section className="grid gap-4 lg:grid-cols-2">
-      <CupCard className="p-4 text-white sm:p-5">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="cw-kicker">My Favorites</p>
-            <h2 className="mt-2 text-2xl font-black">Followed Teams</h2>
-          </div>
-          <a href="#team-picker" className="rounded-full px-3 py-2 text-sm font-black text-[var(--cw-primary)] hover:text-white">Manage</a>
+    <section className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 lg:gap-4">
+      <CupCard className="p-3 text-white sm:p-4">
+        <div className="flex items-start justify-between gap-2">
+          <h2 className="text-lg font-black uppercase tracking-tight">My Favorites</h2>
+          <a href="#team-picker" className="rounded-full px-2 py-1 text-sm font-black text-[var(--cw-primary)] hover:text-white">Manage</a>
         </div>
-        {favoriteTeams.length ? (
-          <div className="mt-4 flex flex-wrap gap-3">
-            {favoriteTeams.slice(0, 6).map((team) => (
-              <div key={team.abbreviation} className="text-center">
-                <TeamBadge name={team.name} logo={team.logo} />
-                <p className="mt-1 text-xs font-black text-slate-200">{team.abbreviation}</p>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="mt-4 rounded-2xl border border-dashed border-white/15 bg-white/[0.055] px-4 py-4 text-sm font-bold text-slate-300">Add teams to personalize match rails and schedule filters.</p>
-        )}
-        <div id="team-picker">
+        <div className="mt-3 flex flex-wrap gap-3">
+          {displayTeams.map((team) => (
+            <div key={team.abbreviation} className="relative text-center">
+              <TeamBadge name={team.name} logo={team.logo} />
+              {favorites.includes(team.abbreviation) ? <span className="absolute -right-1 -top-1 grid size-4 place-items-center rounded-full bg-[var(--cw-primary)] text-[0.55rem] text-[#120d03]">★</span> : null}
+              <p className="mt-1 text-xs font-black text-slate-200">{team.abbreviation}</p>
+            </div>
+          ))}
+        </div>
+        <p className="mt-2 text-xs font-semibold leading-5 text-slate-400">{favoriteTeams.length ? 'Personalized teams stay pinned across CupWatch.' : 'Add more teams to personalize your experience.'}</p>
+        <details id="team-picker" className="mt-2">
+          <summary className="cursor-pointer text-xs font-black uppercase tracking-wide text-[var(--cw-primary)]">Edit teams</summary>
           <TeamPicker teams={teamOptions} favorites={favorites} onToggle={onToggleFavorite} isLoading={isLoading} />
-        </div>
+        </details>
       </CupCard>
 
-      <CupCard className="overflow-hidden p-4 text-white sm:p-5">
-        <div className="absolute right-3 top-4 h-32 w-24 opacity-10" aria-hidden="true">
-          <div className="mx-auto h-20 w-14 rounded-b-[2rem] rounded-t-lg border-[8px] border-[var(--cw-primary)]" />
-          <div className="mx-auto h-10 w-4 bg-[var(--cw-primary)]" />
-          <div className="mx-auto h-3 w-20 rounded-full bg-[var(--cw-primary)]" />
+      <CupCard className="overflow-hidden p-3 text-white sm:p-4">
+        <div className="absolute right-1 top-5 h-24 w-20 opacity-10" aria-hidden="true">
+          <div className="mx-auto h-14 w-10 rounded-b-[1.5rem] rounded-t-lg border-[6px] border-[var(--cw-primary)]" />
+          <div className="mx-auto h-8 w-3 bg-[var(--cw-primary)]" />
+          <div className="mx-auto h-2.5 w-16 rounded-full bg-[var(--cw-primary)]" />
         </div>
-        <p className="cw-kicker">World Cup Countdown</p>
-        <div className="mt-7 grid grid-cols-3 gap-2">
+        <h2 className="text-sm font-black uppercase tracking-wide text-[var(--cw-primary)]">World Cup Countdown</h2>
+        <div className="mt-4 grid grid-cols-3 gap-1.5">
           {[
             ['Days', countdown.days],
             ['Hrs', countdown.hours],
             ['Mins', countdown.minutes],
           ].map(([label, value]) => (
-            <div key={label} className="rounded-2xl bg-black/35 px-3 py-4 text-center ring-1 ring-white/10">
-              <p className="text-3xl font-black tabular-nums sm:text-4xl">{String(value).padStart(2, '0')}</p>
-              <p className="mt-1 text-[0.68rem] font-black uppercase tracking-wide text-slate-400">{label}</p>
+            <div key={label} className="rounded-xl bg-black/35 px-1 py-2 text-center ring-1 ring-white/10">
+              <p className="text-2xl font-black tabular-nums sm:text-3xl">{String(value).padStart(2, '0')}</p>
+              <p className="text-[0.6rem] font-black uppercase tracking-wide text-slate-400">{label}</p>
             </div>
           ))}
         </div>
-        <Link href="/schedule" className="mt-6 inline-flex min-h-11 items-center rounded-full bg-white/[0.08] px-4 py-3 text-sm font-black text-white ring-1 ring-white/10 transition hover:bg-[var(--cw-primary)] hover:text-[#120d03] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cw-primary)]">
+        <Link href="/schedule" className="mt-3 inline-flex min-h-9 items-center rounded-xl bg-white/[0.08] px-3 py-2 text-xs font-black uppercase text-white ring-1 ring-white/10 transition hover:bg-[var(--cw-primary)] hover:text-[#120d03] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cw-primary)]">
           ▦ <span className="ml-2">View Fixtures</span>
         </Link>
       </CupCard>
@@ -548,13 +495,13 @@ function NewsPreview({ news, isLoading }: { news: NewsArticle[]; isLoading: bool
     <section>
       <SectionHeader eyebrow="Briefing" title="Latest News" href="/news" linkText="See All →" />
       {isLoading ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <LoadingPanel className="h-44" />
-          <LoadingPanel className="h-44" />
-          <LoadingPanel className="h-44" />
+        <div className="grid gap-3 lg:grid-cols-3">
+          <LoadingPanel className="h-28" />
+          <LoadingPanel className="h-28" />
+          <LoadingPanel className="h-28" />
         </div>
       ) : news.length ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 lg:grid-cols-3">
           {news.slice(0, 3).map((item, index) => (
             <NewsPreviewCard key={item.id} article={item} delay={index * 0.04} />
           ))}
@@ -569,15 +516,15 @@ function NewsPreview({ news, isLoading }: { news: NewsArticle[]; isLoading: bool
 
 function NewsPreviewCard({ article, delay }: { article: NewsArticle; delay: number }) {
   const card = (
-    <CupCard delay={delay} hover className="h-full overflow-hidden text-white">
-      {article.image ? <img src={article.image} alt="" className="h-28 w-full object-cover sm:h-32" loading="lazy" /> : null}
-      <div className="p-4">
-        <div className="mb-3 flex items-center justify-between gap-3 text-[0.68rem] font-black uppercase tracking-wide text-slate-300">
+    <CupCard delay={delay} hover className="flex h-full overflow-hidden text-white">
+      {article.image ? <img src={article.image} alt="" className="h-auto w-24 shrink-0 object-cover sm:w-28" loading="lazy" /> : <div className="w-24 shrink-0 bg-[radial-gradient(circle_at_40%_35%,rgba(245,197,91,0.28),transparent_55%),rgba(255,255,255,0.05)] sm:w-28" />}
+      <div className="min-w-0 p-3">
+        <div className="mb-2 flex items-center justify-between gap-3 text-[0.62rem] font-black uppercase tracking-wide text-slate-400">
           <span>CupWatch</span>
           {article.publishedAt ? <time dateTime={article.publishedAt}>{formatNewsDate(article.publishedAt)}</time> : null}
         </div>
-        <h3 className="text-lg font-black leading-tight">{article.title}</h3>
-        {article.description ? <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-200">{article.description}</p> : null}
+        <h3 className="line-clamp-2 text-sm font-black leading-tight sm:text-base">{article.title}</h3>
+        {article.description ? <p className="mt-1.5 line-clamp-2 text-xs leading-5 text-slate-300">{article.description}</p> : null}
       </div>
     </CupCard>
   );
@@ -680,15 +627,11 @@ export default function TodayPage() {
 
   return (
     <main className="page-container cw-page">
-      <div className="mx-auto max-w-6xl space-y-7">
+      <div className="mx-auto max-w-6xl space-y-4 sm:space-y-5">
         <HeroCard matches={matches} now={now} isLoading={matchesState === 'loading'} />
-
-        <InstallPromptCard />
 
         {notice ? <div className="rounded-2xl border border-amber-300/30 bg-amber-300/10 px-4 py-3 text-sm font-bold text-amber-100">{notice}</div> : null}
         {hasLoadError ? <div className="rounded-2xl border border-red-300/30 bg-red-500/10 px-4 py-3 text-sm font-bold text-red-100">Some dashboard sections could not load. Try refreshing in a moment.</div> : null}
-
-        <YourTeamsSection matches={matches} now={now} favorites={favorites} isLoading={matchesState === 'loading'} />
 
         <NextMatchesSection matches={matches} now={now} isLoading={matchesState === 'loading'} />
 
@@ -697,6 +640,8 @@ export default function TodayPage() {
         <FavoritesCountdownRow matches={matches} favorites={favorites} onToggleFavorite={toggleFavorite} isLoading={matchesState === 'loading'} now={now} />
 
         <NewsPreview news={news} isLoading={newsState === 'loading'} />
+
+        <InstallPromptCard />
       </div>
     </main>
   );

@@ -137,12 +137,12 @@ function MatchCard({ match, index }: { match: Match; index: number }) {
   const location = locationText(match);
 
   return (
-    <Link href={`/match/${match.id}`} className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2" aria-label={`View details for ${match.homeTeam.name} vs ${match.awayTeam.name}`}>
+    <Link href={`/match/${match.id}`} className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cw-primary)] focus-visible:ring-offset-2" aria-label={`View details for ${match.homeTeam.name} vs ${match.awayTeam.name}`}>
       <BrandedMatchCard delay={Math.min(index * 0.02, 0.18)} className="p-3.5 text-slate-100 sm:p-4">
       <div className="mb-3 flex items-start justify-between gap-2 sm:gap-3">
         <div>
           <p className="text-base font-black text-white sm:text-lg">{formatLocalTime(match.date)}</p>
-          <p className="text-xs font-black uppercase tracking-wide text-emerald-300">{deriveStageLabel(match)}</p>
+          <p className="text-xs font-black uppercase tracking-wide text-[var(--cw-primary)]">{deriveStageLabel(match)}</p>
         </div>
         <span className={`rounded-full px-3 py-1 text-xs font-black uppercase tracking-wide ring-1 ${statusStyles[match.status]}`}>{statusLabels[match.status]}</span>
       </div>
@@ -258,7 +258,7 @@ export default function SchedulePage() {
               <div className="sticky top-[72px] z-20 mb-3 rounded-2xl border border-white/10 bg-[#030712]/88 px-3 py-2.5 sm:px-4 sm:py-3 shadow-[var(--cw-shadow-soft)] backdrop-blur-xl">
                 <div className="flex items-center justify-between gap-3">
                   <h2 className="text-lg font-black text-white sm:text-xl">{group.title}</h2>
-                  <span className="rounded-full bg-[var(--cw-primary)] px-3 py-1 text-xs font-black text-slate-950 shadow-[var(--cw-glow-green)]">{group.matches.length}</span>
+                  <span className="rounded-full bg-[var(--cw-primary)] px-3 py-1 text-xs font-black text-[#120d03] shadow-[var(--cw-glow-green)]">{group.matches.length}</span>
                 </div>
               </div>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

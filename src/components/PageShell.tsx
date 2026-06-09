@@ -20,7 +20,7 @@ export function PageShell({ eyebrow, title, description, children }: PageShellPr
               <p className="cw-muted mt-3 max-w-2xl text-sm leading-6 md:text-base md:leading-7">{description}</p>
             </div>
             <div className="hidden rounded-full border border-[var(--cw-border)] bg-white/[0.06] px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-[var(--cw-primary)] md:block">
-              Command center
+              Gold command center
             </div>
           </div>
         </GlassPanel>

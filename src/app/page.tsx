@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { MotionCard } from '@/components/MotionCard';
+import { deriveStageLabel } from '@/lib/match-utils';
 import type { GroupStanding, NewsItem } from '@/types/cupwatch';
 import type { Match, MatchStatus } from '@/types/match';
 
@@ -261,10 +262,11 @@ function HeroCard({ matches, now, isLoading }: { matches: Match[]; now: Date; is
 
 function MatchMiniCard({ match, index }: { match: Match; index: number }) {
   return (
-    <MotionCard delay={index * 0.04} className="min-w-[17rem] rounded-[1.5rem] border border-white/10 bg-white/[0.08] p-4 text-white shadow-lg shadow-slate-950/20 backdrop-blur">
+    <Link href={`/match/${match.id}`} className="block min-w-[17rem] focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300" aria-label={`View details for ${match.homeTeam.name} vs ${match.awayTeam.name}`}>
+      <MotionCard delay={index * 0.04} className="rounded-[1.5rem] border border-white/10 bg-white/[0.08] p-4 text-white shadow-lg shadow-slate-950/20 backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/[0.12]">
       <div className="mb-4 flex items-center justify-between gap-3">
         <span className={`rounded-full border px-3 py-1 text-[0.65rem] font-black uppercase tracking-wide ${statusStyles[match.status]}`}>{statusLabels[match.status]}</span>
-        <span className="text-xs font-bold text-slate-400">{match.round ?? formatMatchday(toMatchdayKey(match))}</span>
+        <span className="text-xs font-bold text-slate-400">{deriveStageLabel(match)}</span>
       </div>
 
       <div className="space-y-3">
@@ -284,7 +286,8 @@ function MatchMiniCard({ match, index }: { match: Match; index: number }) {
         <p>{match.status === 'pre' ? formatKickoff(match.date) : match.statusText}</p>
         <p>{getVenueCity(match)}</p>
       </div>
-    </MotionCard>
+      </MotionCard>
+    </Link>
   );
 }
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { MotionCard } from '@/components/MotionCard';
 import { PageShell } from '@/components/PageShell';
 import type { GroupStanding } from '@/types/cupwatch';
@@ -18,6 +18,10 @@ function formatGoalDifference(goalDifference: number) {
 
 function LoadingTable() {
   return <div className="h-72 animate-pulse rounded-[1.5rem] bg-white/80 shadow-sm shadow-slate-200/80" />;
+}
+
+function groupLetter(groupName: string) {
+  return groupName.replace(/^Group\s+/i, '').trim();
 }
 
 function StandingsTable({ group, index }: { group: GroupStanding; index: number }) {
@@ -64,6 +68,8 @@ function StandingsTable({ group, index }: { group: GroupStanding; index: number 
 
 export default function StandingsPage() {
   const [groups, setGroups] = useState<GroupStanding[]>([]);
+  const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
+  const [showAllGroups, setShowAllGroups] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [fallbackMessage, setFallbackMessage] = useState<string | null>(null);
@@ -85,6 +91,7 @@ export default function StandingsPage() {
         if (!isMounted) return;
 
         setGroups(payload.data);
+        setSelectedGroup((currentGroup) => currentGroup ?? payload.data[0]?.group ?? null);
         setFallbackMessage(payload.fallback ? payload.message ?? 'Showing fallback group tables while live data is unavailable.' : null);
       } catch (fetchError) {
         if (!isMounted) return;
@@ -104,6 +111,8 @@ export default function StandingsPage() {
     };
   }, []);
 
+  const selectedGroupData = useMemo(() => groups.find((group) => group.group === selectedGroup) ?? groups[0] ?? null, [groups, selectedGroup]);
+
   return (
     <PageShell eyebrow="Standings" title="Group tables without the noise" description="Live ESPN group tables are served through CupWatch’s API layer, with calm fallback standings if the feed is unavailable.">
       {fallbackMessage ? <div className="mb-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-bold text-amber-800">{fallbackMessage}</div> : null}
@@ -115,11 +124,59 @@ export default function StandingsPage() {
           <LoadingTable />
         </div>
       ) : groups.length ? (
-        <div className="grid gap-5 lg:grid-cols-2">
-          {groups.map((group, index) => (
-            <StandingsTable key={group.group} group={group} index={index} />
-          ))}
-        </div>
+        <>
+          <div className="mb-5 md:hidden">
+            <div className="overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="flex min-w-max gap-2">
+                {groups.map((group) => {
+                  const active = !showAllGroups && selectedGroupData?.group === group.group;
+
+                  return (
+                    <button
+                      key={group.group}
+                      type="button"
+                      onClick={() => {
+                        setSelectedGroup(group.group);
+                        setShowAllGroups(false);
+                      }}
+                      className={`rounded-full px-4 py-2 text-sm font-black transition ${
+                        active ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'bg-white text-slate-600 shadow-sm shadow-slate-200/80 hover:text-slate-950'
+                      }`}
+                    >
+                      {groupLetter(group.group)}
+                    </button>
+                  );
+                })}
+                <button
+                  type="button"
+                  onClick={() => setShowAllGroups((value) => !value)}
+                  className={`rounded-full px-4 py-2 text-sm font-black transition ${
+                    showAllGroups ? 'bg-slate-950 text-white shadow-lg shadow-slate-950/15' : 'bg-white text-slate-600 shadow-sm shadow-slate-200/80 hover:text-slate-950'
+                  }`}
+                >
+                  {showAllGroups ? 'One group' : 'Show all'}
+                </button>
+              </div>
+            </div>
+            <p className="mt-2 px-1 text-xs font-bold text-slate-500">Swipe Group A–L chips, or show every table when you want the full view.</p>
+          </div>
+
+          <div className="md:hidden">
+            {showAllGroups ? (
+              <div className="grid gap-5">
+                {groups.map((group, index) => <StandingsTable key={group.group} group={group} index={index} />)}
+              </div>
+            ) : selectedGroupData ? (
+              <StandingsTable key={selectedGroupData.group} group={selectedGroupData} index={0} />
+            ) : null}
+          </div>
+
+          <div className="hidden gap-5 md:grid lg:grid-cols-2">
+            {groups.map((group, index) => (
+              <StandingsTable key={group.group} group={group} index={index} />
+            ))}
+          </div>
+        </>
       ) : (
         <div className="rounded-[1.5rem] border border-dashed border-slate-200 bg-white/70 px-4 py-6 text-sm font-bold text-slate-500">No standings are available right now.</div>
       )}

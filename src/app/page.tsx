@@ -575,7 +575,7 @@ export default function TodayPage() {
   const hasLoadError = matchesState === 'error' || standingsState === 'error' || newsState === 'error';
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.14),transparent_28rem),linear-gradient(180deg,#020617_0%,#08111f_48%,#0f172a_100%)] px-4 pb-28 pt-5 md:px-6 md:pb-12 md:pt-8">
+    <main className="page-container min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.14),transparent_28rem),linear-gradient(180deg,#020617_0%,#08111f_48%,#0f172a_100%)] px-4 pt-5 md:px-6 md:pt-8">
       <div className="mx-auto max-w-6xl space-y-7">
         <HeroCard matches={matches} now={now} isLoading={matchesState === 'loading'} />
 

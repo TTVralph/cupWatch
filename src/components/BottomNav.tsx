@@ -4,10 +4,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const navItems = [
-  { href: '/', label: 'Today', icon: '⌂' },
-  { href: '/schedule', label: 'Schedule', icon: '▦' },
-  { href: '/standings', label: 'Standings', icon: '♜' },
-  { href: '/bracket', label: 'Bracket', icon: '◇' },
+  { href: '/', label: 'Today', icon: '◷' },
+  { href: '/schedule', label: 'Schedule', icon: '📅' },
+  { href: '/standings', label: 'Standings', icon: '≡' },
+  { href: '/bracket', label: 'Bracket', icon: '🏆' },
   { href: '/news', label: 'News', icon: '✦' },
 ];
 
@@ -15,19 +15,19 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 px-4 pb-[calc(0.45rem+env(safe-area-inset-bottom))] pt-1.5 md:hidden" aria-label="Primary">
-      <div className="mx-auto grid max-w-[25rem] grid-cols-5 gap-0.5 rounded-[1.2rem] border border-[rgba(245,197,91,0.2)] bg-[#0a0b0c]/92 p-1 shadow-[0_-18px_55px_rgba(0,0,0,0.62)] backdrop-blur-xl">
+    <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-slate-950/92 px-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 shadow-[0_-12px_35px_rgba(2,6,23,0.45)] backdrop-blur md:hidden">
+      <div className="mx-auto grid max-w-md grid-cols-5 gap-1">
         {navItems.map(({ href, label, icon }) => {
           const active = pathname === href;
           return (
             <Link
               key={href}
               href={href}
-              className={`flex min-h-[2.65rem] min-w-0 flex-col items-center justify-center rounded-[1rem] px-1 py-1.5 text-[0.62rem] font-black transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cw-primary)] ${
-                active ? 'text-[var(--cw-primary)] bg-[rgba(245,197,91,0.09)]' : 'text-slate-300 hover:bg-white/10 hover:text-white'
+              className={`flex min-w-0 flex-col items-center rounded-2xl px-1 py-2 text-[0.66rem] font-semibold transition ${
+                active ? 'bg-emerald-400 text-slate-950' : 'text-slate-400 hover:bg-white/10 hover:text-white'
               }`}
             >
-              <span className="mb-0.5 text-base leading-none" aria-hidden="true">{icon}</span>
+              <span className="mb-1 text-lg leading-none" aria-hidden="true">{icon}</span>
               <span className="max-w-full truncate">{label}</span>
             </Link>
           );

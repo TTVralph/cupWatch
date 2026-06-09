@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import { MatchCard as BrandedMatchCard } from '@/components/Brand';
+import { MotionCard } from '@/components/MotionCard';
 import { PageShell } from '@/components/PageShell';
 import { isBetween, tournamentDateKey } from '@/lib/match-utils';
 import type { Match, MatchStatus } from '@/types/match';
@@ -37,9 +37,9 @@ const statusLabels: Record<MatchStatus, string> = {
 };
 
 const statusStyles: Record<MatchStatus, string> = {
-  live: 'cw-status-live',
-  pre: 'cw-status-pre',
-  post: 'cw-status-post',
+  live: 'bg-red-400/15 text-red-100 ring-red-300/30',
+  pre: 'bg-cyan-400/15 text-cyan-100 ring-cyan-300/30',
+  post: 'bg-slate-500/20 text-slate-200 ring-slate-400/30',
 };
 
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
@@ -112,12 +112,12 @@ function formatTime(date: string) {
 }
 
 function LoadingCard() {
-  return <div className="h-56 animate-pulse cw-card" />;
+  return <div className="h-56 animate-pulse rounded-[1.5rem] bg-white/[0.08] shadow-lg shadow-slate-950/20" />;
 }
 
 function EmptyStage({ label }: { label: string }) {
   return (
-    <div className="rounded-[1.5rem] border border-dashed border-white/15 bg-white/[0.06] px-4 py-8 text-center text-sm font-bold text-slate-300">
+    <div className="rounded-[1.5rem] border border-dashed border-white/15 bg-white/[0.06] px-4 py-8 text-center text-sm font-bold text-slate-500">
       {label} matches are not available yet.
     </div>
   );
@@ -128,12 +128,12 @@ function BracketMatchCard({ match, index }: { match: Match; index: number }) {
   const hasScore = match.homeTeam.score !== undefined || match.awayTeam.score !== undefined;
 
   return (
-    <Link href={`/match/${match.id}`} className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cw-primary)] focus-visible:ring-offset-2" aria-label={`View details for ${displayTeamName(match, 'home')} vs ${displayTeamName(match, 'away')}`}>
-      <BrandedMatchCard delay={index * 0.04} className="p-3.5 text-slate-100 sm:p-4">
-      <div className="mb-4 flex items-start justify-between gap-2 sm:gap-3">
+    <Link href={`/match/${match.id}`} className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2" aria-label={`View details for ${displayTeamName(match, 'home')} vs ${displayTeamName(match, 'away')}`}>
+      <MotionCard delay={index * 0.04} className="rounded-[1.5rem] border border-white/10 bg-white/[0.08] text-slate-100 p-4 shadow-lg shadow-slate-950/20 transition hover:-translate-y-0.5 hover:bg-white/[0.11]">
+      <div className="mb-4 flex items-start justify-between gap-3">
         <div>
           <p className="text-sm font-black text-white">{formatDate(match.date)}</p>
-          <p className="text-xs font-bold text-slate-300">{formatTime(match.date)}</p>
+          <p className="text-xs font-bold text-slate-500">{formatTime(match.date)}</p>
         </div>
         <span className={`rounded-full px-3 py-1 text-[0.68rem] font-black uppercase tracking-wide ring-1 ${statusStyles[match.status]}`}>{statusLabels[match.status]}</span>
       </div>
@@ -142,25 +142,25 @@ function BracketMatchCard({ match, index }: { match: Match; index: number }) {
         <div className="flex min-w-0 items-center justify-between gap-3 rounded-2xl bg-white/[0.06] px-4 py-3">
           <div className="min-w-0">
             <p className="break-words text-sm font-black text-white">{displayTeamName(match, 'home')}</p>
-            <p className="text-xs font-bold text-slate-300">{displayTeamCode(match, 'home')}</p>
+            <p className="text-xs font-bold text-slate-500">{displayTeamCode(match, 'home')}</p>
           </div>
           {hasScore ? <span className="shrink-0 text-lg font-black text-white">{match.homeTeam.score ?? 0}</span> : null}
         </div>
-        <div className="px-2 text-xs font-black uppercase tracking-wide text-[var(--cw-primary)]">vs</div>
+        <div className="px-2 text-xs font-black uppercase tracking-wide text-emerald-300">vs</div>
         <div className="flex min-w-0 items-center justify-between gap-3 rounded-2xl bg-white/[0.06] px-4 py-3">
           <div className="min-w-0">
             <p className="break-words text-sm font-black text-white">{displayTeamName(match, 'away')}</p>
-            <p className="text-xs font-bold text-slate-300">{displayTeamCode(match, 'away')}</p>
+            <p className="text-xs font-bold text-slate-500">{displayTeamCode(match, 'away')}</p>
           </div>
           {hasScore ? <span className="shrink-0 text-lg font-black text-white">{match.awayTeam.score ?? 0}</span> : null}
         </div>
       </div>
 
-      <div className="mt-4 space-y-1 text-sm font-semibold leading-5 text-slate-200">
+      <div className="mt-4 space-y-1 text-sm font-semibold text-slate-300">
         <p className="font-black text-white">{match.statusText}</p>
         {location ? <p>{location}</p> : null}
       </div>
-      </BrandedMatchCard>
+      </MotionCard>
     </Link>
   );
 }
@@ -231,7 +231,7 @@ export default function BracketPage() {
       {fallbackMessage ? <div className="mb-4 rounded-2xl border border-amber-300/30 bg-amber-300/10 px-4 py-3 text-sm font-bold text-amber-100">{fallbackMessage}</div> : null}
       {error ? <div className="mb-4 rounded-2xl border border-red-300/30 bg-red-400/10 px-4 py-3 text-sm font-bold text-red-100">{error}</div> : null}
 
-      <div className="-mx-1 mb-5 overflow-x-auto px-1 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="mb-5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <div className="flex min-w-max gap-2">
           {stages.map((stage) => {
             const active = selectedStage === stage.id;
@@ -242,8 +242,8 @@ export default function BracketPage() {
                 key={stage.id}
                 type="button"
                 onClick={() => setSelectedStage(stage.id)}
-                className={`cw-pill px-4 py-2 text-sm ${
-                  active ? 'cw-pill-active' : ''
+                className={`rounded-full px-4 py-2 text-sm font-black transition ${
+                  active ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'bg-white/[0.08] text-slate-300 shadow-lg shadow-slate-950/15 hover:bg-white/[0.12] hover:text-white'
                 }`}
               >
                 {stage.label}
@@ -263,19 +263,19 @@ export default function BracketPage() {
       ) : (
         <>
           <section className="md:hidden">
-            <h2 className="mb-3 px-1 text-sm font-black uppercase tracking-[0.2em] text-slate-300">{getStageLabel(selectedStage)}</h2>
+            <h2 className="mb-3 px-1 text-sm font-black uppercase tracking-[0.2em] text-slate-500">{getStageLabel(selectedStage)}</h2>
             <div className="space-y-3">
               {selectedMatches.length ? selectedMatches.map((match, index) => <BracketMatchCard key={match.id} match={match} index={index} />) : <EmptyStage label={getStageLabel(selectedStage)} />}
             </div>
           </section>
 
-          <div className="hidden snap-x gap-4 overflow-x-auto pb-3 md:flex">
+          <div className="hidden gap-4 overflow-x-auto pb-3 snap-x md:flex">
             {stages.map((stage, stageIndex) => {
               const stageMatches = matchesByStage.get(stage.id) ?? [];
 
               return (
-                <section key={stage.id} className="min-w-[17.5rem] flex-1 snap-start lg:min-w-[18.5rem]">
-                  <h2 className="mb-3 px-1 text-sm font-black uppercase tracking-[0.2em] text-slate-300">{stage.label}</h2>
+                <section key={stage.id} className="min-w-[300px] flex-1 snap-start">
+                  <h2 className="mb-3 px-1 text-sm font-black uppercase tracking-[0.2em] text-slate-500">{stage.label}</h2>
                   <div className="space-y-3">
                     {stageMatches.length ? stageMatches.map((match, matchIndex) => <BracketMatchCard key={match.id} match={match} index={stageIndex + matchIndex} />) : <EmptyStage label={stage.label} />}
                   </div>

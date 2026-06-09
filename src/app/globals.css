@@ -24,3 +24,13 @@ body {
   background: #34d399;
   color: #052e2b;
 }
+
+.page-container {
+  padding-bottom: calc(9rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 768px) {
+  .page-container {
+    padding-bottom: 3rem;
+  }
+}

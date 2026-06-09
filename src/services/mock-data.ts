@@ -138,9 +138,9 @@ export const mockNews: NewsItem[] = [
   },
   {
     id: 'group-watch',
-    headline: 'Group C starts to take shape after Canada win',
+    headline: 'Group C storylines to watch before first kickoffs',
     source: 'CupWatch Analysis',
     time: '1 hr ago',
-    summary: 'Canada’s goal difference gives them an early cushion while Spain and Morocco prepare for their first match.',
+    summary: 'Canada, Spain, Morocco, and Japan bring contrasting styles into one of the tournament’s most balanced groups.',
   },
 ];

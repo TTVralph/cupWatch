@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
+import { CupCard, MatchCard as BrandedMatchCard, SectionHeader } from '@/components/Brand';
 import { MotionCard } from '@/components/MotionCard';
 import { TeamPicker } from '@/components/TeamPicker';
 import { getTeamsFromMatches, matchInvolvesFavoriteTeam } from '@/lib/favorite-teams';
@@ -207,7 +208,7 @@ function formatGoalDifference(goalDifference: number) {
 }
 
 function LoadingPanel({ className = '' }: { className?: string }) {
-  return <div className={`animate-pulse rounded-[1.75rem] border border-white/10 bg-white/10 ${className}`} />;
+  return <div className={`animate-pulse cw-card ${className}`} />;
 }
 
 
@@ -259,7 +260,7 @@ function InstallPromptCard() {
   if (!isVisible) return null;
 
   return (
-    <MotionCard className="rounded-[1.5rem] border border-emerald-300/25 bg-[linear-gradient(135deg,rgba(16,185,129,0.18),rgba(15,23,42,0.88))] p-4 text-white shadow-xl shadow-slate-950/20 backdrop-blur">
+    <CupCard className="border-emerald-300/25 p-4 text-white">
       <div className="flex gap-3">
         <div className="grid size-11 shrink-0 place-items-center rounded-2xl bg-emerald-400 text-sm font-black text-slate-950 shadow-lg shadow-emerald-500/20">CW</div>
         <div className="min-w-0 flex-1">
@@ -279,7 +280,7 @@ function InstallPromptCard() {
           </div>
         </div>
       </div>
-    </MotionCard>
+    </CupCard>
   );
 }
 
@@ -297,7 +298,7 @@ function HeroCard({ matches, now, isLoading }: { matches: Match[]; now: Date; is
   const started = isTournamentStarted(now);
 
   return (
-    <MotionCard className="overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.18),transparent_34rem),linear-gradient(135deg,#101827_0%,#07111f_58%,#06251f_100%)] p-5 text-white shadow-2xl shadow-slate-950/30 md:p-8">
+    <MotionCard className="cw-hero overflow-hidden p-5 text-white md:p-8">
       <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.3em] text-cyan-200">World Cup companion</p>
@@ -344,7 +345,7 @@ function HeroCard({ matches, now, isLoading }: { matches: Match[]; now: Date; is
 function MatchMiniCard({ match, index }: { match: Match; index: number }) {
   return (
     <Link href={`/match/${match.id}`} className="block min-w-[17rem] focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300" aria-label={`View details for ${match.homeTeam.name} vs ${match.awayTeam.name}`}>
-      <MotionCard delay={index * 0.04} className="rounded-[1.5rem] border border-white/10 bg-white/[0.08] p-4 text-white shadow-lg shadow-slate-950/20 backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/[0.12]">
+      <BrandedMatchCard delay={index * 0.04} className="cw-ticket p-4 text-white">
       <div className="mb-4 flex items-center justify-between gap-3">
         <span className={`rounded-full border px-3 py-1 text-[0.65rem] font-black uppercase tracking-wide ${statusStyles[match.status]}`}>{statusLabels[match.status]}</span>
         <span className="text-xs font-bold text-slate-400">{deriveStageLabel(match)}</span>
@@ -367,24 +368,8 @@ function MatchMiniCard({ match, index }: { match: Match; index: number }) {
         <p>{match.status === 'pre' ? formatKickoff(match.date) : match.statusText}</p>
         <p>{getVenueCity(match)}</p>
       </div>
-      </MotionCard>
+      </BrandedMatchCard>
     </Link>
-  );
-}
-
-function SectionHeader({ eyebrow, title, href, linkText }: { eyebrow: string; title: string; href?: string; linkText?: string }) {
-  return (
-    <div className="mb-3 flex items-end justify-between gap-3 px-1">
-      <div>
-        <p className="text-xs font-black uppercase tracking-[0.24em] text-cyan-200/80">{eyebrow}</p>
-        <h2 className="mt-1 text-2xl font-black text-white">{title}</h2>
-      </div>
-      {href && linkText ? (
-        <Link href={href} className="shrink-0 text-sm font-black text-emerald-200 transition hover:text-white">
-          {linkText}
-        </Link>
-      ) : null}
-    </div>
   );
 }
 
@@ -432,7 +417,7 @@ function StandingsPreview({ groups, isLoading }: { groups: GroupStanding[]; isLo
   return (
     <section>
       <SectionHeader eyebrow="Tables" title="Standings Preview" href="/standings" linkText="Full standings →" />
-      <MotionCard className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.08] text-white shadow-lg shadow-slate-950/20 backdrop-blur">
+      <CupCard className="overflow-hidden text-white">
         {isLoading ? (
           <LoadingPanel className="h-72" />
         ) : groups.length && activeGroup ? (
@@ -478,7 +463,7 @@ function StandingsPreview({ groups, isLoading }: { groups: GroupStanding[]; isLo
         ) : (
           <div className="px-4 py-6 text-sm font-bold text-slate-300">No standings are available right now.</div>
         )}
-      </MotionCard>
+      </CupCard>
     </section>
   );
 }
@@ -518,7 +503,7 @@ function FollowTeamsCard({ matches, favorites, onToggleFavorite, isLoading }: { 
   const teamOptions = useMemo(() => getTeamsFromMatches(matches), [matches]);
 
   return (
-    <MotionCard className="rounded-[1.5rem] border border-white/10 bg-[linear-gradient(135deg,rgba(16,185,129,0.16),rgba(255,255,255,0.07))] p-5 text-white shadow-lg shadow-slate-950/20">
+    <CupCard className="p-5 text-white">
       <p className="text-xs font-black uppercase tracking-[0.24em] text-emerald-200">Personalize</p>
       <h2 className="mt-2 text-2xl font-black">Follow your teams</h2>
       <p className="mt-2 text-sm leading-6 text-slate-300">Pick favorites on this device. No account, no login, and no extra feed clutter.</p>
@@ -528,7 +513,7 @@ function FollowTeamsCard({ matches, favorites, onToggleFavorite, isLoading }: { 
       <p className="mt-3 text-xs font-bold text-slate-400">
         {favorites.length ? `${favorites.length} selected: ${favorites.join(', ')}` : 'Select teams to unlock a Your Teams match rail and schedule filter.'}
       </p>
-    </MotionCard>
+    </CupCard>
   );
 }
 
@@ -558,7 +543,7 @@ function NewsPreview({ news, isLoading }: { news: NewsArticle[]; isLoading: bool
 
 function NewsPreviewCard({ article, delay }: { article: NewsArticle; delay: number }) {
   const card = (
-    <MotionCard delay={delay} className="h-full overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.08] text-white shadow-lg shadow-slate-950/20 backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/[0.1]">
+    <CupCard delay={delay} hover className="h-full overflow-hidden text-white">
       {article.image ? <img src={article.image} alt="" className="h-32 w-full object-cover" loading="lazy" /> : null}
       <div className="p-4">
         <div className="mb-3 flex items-center justify-between gap-3 text-[0.65rem] font-black uppercase tracking-wide text-slate-400">
@@ -568,7 +553,7 @@ function NewsPreviewCard({ article, delay }: { article: NewsArticle; delay: numb
         <h3 className="text-lg font-black leading-tight">{article.title}</h3>
         {article.description ? <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-300">{article.description}</p> : null}
       </div>
-    </MotionCard>
+    </CupCard>
   );
 
   if (!article.url) return card;
@@ -668,7 +653,7 @@ export default function TodayPage() {
   const hasLoadError = matchesState === 'error' || standingsState === 'error' || newsState === 'error';
 
   return (
-    <main className="page-container min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.14),transparent_28rem),linear-gradient(180deg,#020617_0%,#08111f_48%,#0f172a_100%)] px-4 pt-5 md:px-6 md:pt-8">
+    <main className="page-container cw-page">
       <div className="mx-auto max-w-6xl space-y-7">
         <HeroCard matches={matches} now={now} isLoading={matchesState === 'loading'} />
 

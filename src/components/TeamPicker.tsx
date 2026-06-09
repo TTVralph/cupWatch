@@ -22,11 +22,11 @@ export function TeamPicker({ teams, favorites, onToggle, isLoading = false }: Te
   const favoriteSet = new Set(favorites);
 
   if (isLoading) {
-    return <div className="mt-4 h-40 animate-pulse rounded-[1.25rem] border border-white/10 bg-white/10" />;
+    return <div className="cw-card mt-4 h-40 animate-pulse" />;
   }
 
   if (!teams.length) {
-    return <p className="mt-4 rounded-[1.25rem] border border-dashed border-white/15 bg-white/[0.06] px-4 py-5 text-sm font-bold text-slate-300">Teams will appear once the schedule loads.</p>;
+    return <p className="mt-4 cw-card border-dashed px-4 py-5 text-sm font-bold text-slate-300">Teams will appear once the schedule loads.</p>;
   }
 
   return (
@@ -42,8 +42,8 @@ export function TeamPicker({ teams, favorites, onToggle, isLoading = false }: Te
             aria-pressed={selected}
             className={`flex items-center gap-3 rounded-2xl border px-3 py-3 text-left transition ${
               selected
-                ? 'border-emerald-300 bg-emerald-300 text-slate-950 shadow-lg shadow-emerald-950/20'
-                : 'border-white/10 bg-white/10 text-slate-100 hover:border-white/20 hover:bg-white/15'
+                ? 'border-[var(--cw-primary)] bg-[linear-gradient(135deg,var(--cw-primary),var(--cw-cyan))] text-slate-950 shadow-[var(--cw-glow-green)]'
+                : 'border-white/10 bg-white/[0.07] text-slate-100 hover:border-white/20 hover:bg-white/[0.12]'
             }`}
           >
             <TeamAvatar team={team} />

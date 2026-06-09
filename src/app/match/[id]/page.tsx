@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { MotionCard } from '@/components/MotionCard';
+import { CupCard } from '@/components/Brand';
 import { cityCountryText, deriveStageLabel, formatMatchDate, formatMatchTime, getTeamInitials, hasScore, scoreText } from '@/lib/match-utils';
 import { useFavoriteTeams } from '@/hooks/use-favorite-teams';
 import type { Match, MatchStatus } from '@/types/match';
@@ -24,9 +24,9 @@ const statusLabels: Record<MatchStatus, string> = {
 };
 
 const statusStyles: Record<MatchStatus, string> = {
-  live: 'border-red-300/40 bg-red-500/15 text-red-100',
-  pre: 'border-cyan-300/40 bg-cyan-400/10 text-cyan-100',
-  post: 'border-slate-400/40 bg-slate-500/20 text-slate-100',
+  live: 'cw-status-live',
+  pre: 'cw-status-pre',
+  post: 'cw-status-post',
 };
 
 function TeamLogo({ name, logo }: { name: string; logo?: string }) {
@@ -39,10 +39,10 @@ function TeamLogo({ name, logo }: { name: string; logo?: string }) {
 
 function DetailSection({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <MotionCard className="rounded-[1.5rem] border border-white/10 bg-white/[0.08] p-4 text-white shadow-lg shadow-slate-950/20 backdrop-blur">
+    <CupCard className="p-4 text-white">
       <h2 className="text-xs font-black uppercase tracking-[0.24em] text-emerald-200">{title}</h2>
       <div className="mt-4 space-y-3 text-sm font-semibold text-slate-300">{children}</div>
-    </MotionCard>
+    </CupCard>
   );
 }
 
@@ -57,7 +57,7 @@ function InfoRow({ label, value }: { label: string; value?: ReactNode }) {
 
 function LoadingState() {
   return (
-    <main className="page-container min-h-screen bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.2),transparent_28rem),linear-gradient(180deg,#020617_0%,#0f172a_100%)] px-4 pt-5">
+    <main className="page-container cw-page">
       <div className="mx-auto max-w-3xl space-y-4">
         <div className="h-10 w-32 animate-pulse rounded-full bg-white/10" />
         <div className="h-80 animate-pulse rounded-[2rem] bg-white/10" />
@@ -72,15 +72,15 @@ function LoadingState() {
 
 function MatchNotFound() {
   return (
-    <main className="page-container grid min-h-screen place-items-center bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.18),transparent_28rem),linear-gradient(180deg,#020617_0%,#0f172a_100%)] px-4 py-10 text-white">
-      <MotionCard className="max-w-md rounded-[2rem] border border-white/10 bg-white/[0.08] p-6 text-center shadow-2xl shadow-slate-950/30 backdrop-blur">
+    <main className="page-container grid min-h-screen place-items-center px-4 py-10 text-white">
+      <CupCard className="max-w-md p-6 text-center">
         <p className="text-xs font-black uppercase tracking-[0.28em] text-emerald-200">Match not found</p>
         <h1 className="mt-3 text-3xl font-black tracking-tight">We could not find that fixture.</h1>
         <p className="mt-3 text-sm leading-6 text-slate-300">The match may have moved, or the schedule may have refreshed. Head back to the schedule to pick another fixture.</p>
         <Link href="/schedule" className="mt-6 inline-flex rounded-full bg-white px-5 py-3 text-sm font-black text-slate-950 transition hover:bg-emerald-100">
           Back to Schedule
         </Link>
-      </MotionCard>
+      </CupCard>
     </main>
   );
 }
@@ -109,13 +109,13 @@ function MatchDetail({ match }: { match: Match }) {
   const matchHasScore = hasScore(match);
 
   return (
-    <main className="page-container min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.18),transparent_32rem),radial-gradient(circle_at_top_right,rgba(16,185,129,0.14),transparent_28rem),linear-gradient(180deg,#020617_0%,#0f172a_100%)] px-4 pt-5 text-white md:px-6 md:pt-8">
+    <main className="page-container cw-page text-white">
       <div className="mx-auto max-w-3xl">
         <Link href="/schedule" className="mb-4 inline-flex items-center rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-black text-slate-100 backdrop-blur transition hover:bg-white/15">
           ← Back
         </Link>
 
-        <MotionCard className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.08] shadow-2xl shadow-slate-950/30 backdrop-blur">
+        <CupCard className="overflow-hidden">
           <div className="border-b border-white/10 p-5">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
@@ -150,7 +150,7 @@ function MatchDetail({ match }: { match: Match }) {
               <FollowTeamButton team={match.awayTeam} />
             </div>
           </div>
-        </MotionCard>
+        </CupCard>
 
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <DetailSection title="Match Info">

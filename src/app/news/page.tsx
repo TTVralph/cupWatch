@@ -1,5 +1,5 @@
 import { headers } from 'next/headers';
-import { MotionCard } from '@/components/MotionCard';
+import { CupCard } from '@/components/Brand';
 import { PageShell } from '@/components/PageShell';
 import type { NewsArticle } from '@/types/cupwatch';
 
@@ -73,7 +73,7 @@ async function getRequestOrigin() {
 
 function NewsCard({ article, delay }: { article: NewsArticle; delay: number }) {
   const card = (
-    <MotionCard delay={delay} className="h-full overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.08] shadow-lg shadow-slate-950/20 transition hover:-translate-y-0.5 hover:bg-white/[0.11]">
+    <CupCard delay={delay} hover className="h-full overflow-hidden">
       {article.image ? <img src={article.image} alt="" className="h-40 w-full object-cover opacity-90" loading="lazy" /> : null}
       <div className="p-5">
         <div className="mb-4 flex items-center justify-between gap-3 text-xs font-black uppercase tracking-wide text-slate-400">
@@ -83,7 +83,7 @@ function NewsCard({ article, delay }: { article: NewsArticle; delay: number }) {
         <h2 className="text-xl font-black leading-tight text-white">{article.title}</h2>
         {article.description ? <p className="mt-3 text-sm leading-6 text-slate-300">{article.description}</p> : null}
       </div>
-    </MotionCard>
+    </CupCard>
   );
 
   if (!article.url) return card;

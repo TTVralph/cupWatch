@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import { MotionCard } from '@/components/MotionCard';
+import { MatchCard as BrandedMatchCard } from '@/components/Brand';
 import { PageShell } from '@/components/PageShell';
 import { isBetween, tournamentDateKey } from '@/lib/match-utils';
 import type { Match, MatchStatus } from '@/types/match';
@@ -37,9 +37,9 @@ const statusLabels: Record<MatchStatus, string> = {
 };
 
 const statusStyles: Record<MatchStatus, string> = {
-  live: 'bg-red-400/15 text-red-100 ring-red-300/30',
-  pre: 'bg-cyan-400/15 text-cyan-100 ring-cyan-300/30',
-  post: 'bg-slate-500/20 text-slate-200 ring-slate-400/30',
+  live: 'cw-status-live',
+  pre: 'cw-status-pre',
+  post: 'cw-status-post',
 };
 
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
@@ -112,12 +112,12 @@ function formatTime(date: string) {
 }
 
 function LoadingCard() {
-  return <div className="h-56 animate-pulse rounded-[1.5rem] bg-white/[0.08] shadow-lg shadow-slate-950/20" />;
+  return <div className="h-56 animate-pulse cw-card" />;
 }
 
 function EmptyStage({ label }: { label: string }) {
   return (
-    <div className="rounded-[1.5rem] border border-dashed border-white/15 bg-white/[0.06] px-4 py-8 text-center text-sm font-bold text-slate-500">
+    <div className="rounded-[1.5rem] border border-dashed border-white/15 bg-white/[0.06] px-4 py-8 text-center text-sm font-bold text-slate-400">
       {label} matches are not available yet.
     </div>
   );
@@ -129,11 +129,11 @@ function BracketMatchCard({ match, index }: { match: Match; index: number }) {
 
   return (
     <Link href={`/match/${match.id}`} className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2" aria-label={`View details for ${displayTeamName(match, 'home')} vs ${displayTeamName(match, 'away')}`}>
-      <MotionCard delay={index * 0.04} className="rounded-[1.5rem] border border-white/10 bg-white/[0.08] text-slate-100 p-4 shadow-lg shadow-slate-950/20 transition hover:-translate-y-0.5 hover:bg-white/[0.11]">
+      <BrandedMatchCard delay={index * 0.04} className="p-4 text-slate-100">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
           <p className="text-sm font-black text-white">{formatDate(match.date)}</p>
-          <p className="text-xs font-bold text-slate-500">{formatTime(match.date)}</p>
+          <p className="text-xs font-bold text-slate-400">{formatTime(match.date)}</p>
         </div>
         <span className={`rounded-full px-3 py-1 text-[0.68rem] font-black uppercase tracking-wide ring-1 ${statusStyles[match.status]}`}>{statusLabels[match.status]}</span>
       </div>
@@ -142,7 +142,7 @@ function BracketMatchCard({ match, index }: { match: Match; index: number }) {
         <div className="flex min-w-0 items-center justify-between gap-3 rounded-2xl bg-white/[0.06] px-4 py-3">
           <div className="min-w-0">
             <p className="break-words text-sm font-black text-white">{displayTeamName(match, 'home')}</p>
-            <p className="text-xs font-bold text-slate-500">{displayTeamCode(match, 'home')}</p>
+            <p className="text-xs font-bold text-slate-400">{displayTeamCode(match, 'home')}</p>
           </div>
           {hasScore ? <span className="shrink-0 text-lg font-black text-white">{match.homeTeam.score ?? 0}</span> : null}
         </div>
@@ -150,7 +150,7 @@ function BracketMatchCard({ match, index }: { match: Match; index: number }) {
         <div className="flex min-w-0 items-center justify-between gap-3 rounded-2xl bg-white/[0.06] px-4 py-3">
           <div className="min-w-0">
             <p className="break-words text-sm font-black text-white">{displayTeamName(match, 'away')}</p>
-            <p className="text-xs font-bold text-slate-500">{displayTeamCode(match, 'away')}</p>
+            <p className="text-xs font-bold text-slate-400">{displayTeamCode(match, 'away')}</p>
           </div>
           {hasScore ? <span className="shrink-0 text-lg font-black text-white">{match.awayTeam.score ?? 0}</span> : null}
         </div>
@@ -160,7 +160,7 @@ function BracketMatchCard({ match, index }: { match: Match; index: number }) {
         <p className="font-black text-white">{match.statusText}</p>
         {location ? <p>{location}</p> : null}
       </div>
-      </MotionCard>
+      </BrandedMatchCard>
     </Link>
   );
 }
@@ -242,8 +242,8 @@ export default function BracketPage() {
                 key={stage.id}
                 type="button"
                 onClick={() => setSelectedStage(stage.id)}
-                className={`rounded-full px-4 py-2 text-sm font-black transition ${
-                  active ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'bg-white/[0.08] text-slate-300 shadow-lg shadow-slate-950/15 hover:bg-white/[0.12] hover:text-white'
+                className={`cw-pill px-4 py-2 text-sm ${
+                  active ? 'cw-pill-active' : ''
                 }`}
               >
                 {stage.label}
@@ -263,7 +263,7 @@ export default function BracketPage() {
       ) : (
         <>
           <section className="md:hidden">
-            <h2 className="mb-3 px-1 text-sm font-black uppercase tracking-[0.2em] text-slate-500">{getStageLabel(selectedStage)}</h2>
+            <h2 className="mb-3 px-1 text-sm font-black uppercase tracking-[0.2em] text-slate-400">{getStageLabel(selectedStage)}</h2>
             <div className="space-y-3">
               {selectedMatches.length ? selectedMatches.map((match, index) => <BracketMatchCard key={match.id} match={match} index={index} />) : <EmptyStage label={getStageLabel(selectedStage)} />}
             </div>
@@ -275,7 +275,7 @@ export default function BracketPage() {
 
               return (
                 <section key={stage.id} className="min-w-[300px] flex-1 snap-start">
-                  <h2 className="mb-3 px-1 text-sm font-black uppercase tracking-[0.2em] text-slate-500">{stage.label}</h2>
+                  <h2 className="mb-3 px-1 text-sm font-black uppercase tracking-[0.2em] text-slate-400">{stage.label}</h2>
                   <div className="space-y-3">
                     {stageMatches.length ? stageMatches.map((match, matchIndex) => <BracketMatchCard key={match.id} match={match} index={stageIndex + matchIndex} />) : <EmptyStage label={stage.label} />}
                   </div>

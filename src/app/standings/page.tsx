@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { MotionCard } from '@/components/MotionCard';
+import { CupCard } from '@/components/Brand';
 import { PageShell } from '@/components/PageShell';
 import type { GroupStanding } from '@/types/cupwatch';
 
@@ -17,7 +17,7 @@ function formatGoalDifference(goalDifference: number) {
 }
 
 function LoadingTable() {
-  return <div className="h-72 animate-pulse rounded-[1.5rem] bg-white/[0.08] shadow-lg shadow-slate-950/20" />;
+  return <div className="h-72 animate-pulse cw-card" />;
 }
 
 function groupLetter(groupName: string) {
@@ -26,13 +26,13 @@ function groupLetter(groupName: string) {
 
 function StandingsTable({ group, index }: { group: GroupStanding; index: number }) {
   return (
-    <MotionCard delay={index * 0.05} className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.08] text-slate-100 shadow-sm shadow-slate-200/80">
+    <CupCard delay={index * 0.05} className="overflow-hidden text-slate-100">
       <div className="flex items-center justify-between border-b border-white/10 px-4 py-4">
         <h2 className="text-lg font-black text-white">{group.group}</h2>
         <span className="rounded-full bg-emerald-300/10 px-3 py-1 text-xs font-black text-emerald-200">Top teams advance</span>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[520px] text-left text-sm">
+        <table className="cw-table w-full min-w-[520px] text-left text-sm">
           <thead className="bg-white/[0.06] text-xs uppercase tracking-wide text-slate-500">
             <tr>
               <th className="px-4 py-3">Team</th>
@@ -62,7 +62,7 @@ function StandingsTable({ group, index }: { group: GroupStanding; index: number 
           </tbody>
         </table>
       </div>
-    </MotionCard>
+    </CupCard>
   );
 }
 
@@ -139,8 +139,8 @@ export default function StandingsPage() {
                         setSelectedGroup(group.group);
                         setShowAllGroups(false);
                       }}
-                      className={`rounded-full px-4 py-2 text-sm font-black transition ${
-                        active ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'bg-white/[0.08] text-slate-300 shadow-lg shadow-slate-950/15 hover:bg-white/[0.12] hover:text-white'
+                      className={`cw-pill px-4 py-2 text-sm ${
+                        active ? 'cw-pill-active' : ''
                       }`}
                     >
                       {groupLetter(group.group)}
@@ -150,8 +150,8 @@ export default function StandingsPage() {
                 <button
                   type="button"
                   onClick={() => setShowAllGroups((value) => !value)}
-                  className={`rounded-full px-4 py-2 text-sm font-black transition ${
-                    showAllGroups ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'bg-white/[0.08] text-slate-300 shadow-lg shadow-slate-950/15 hover:bg-white/[0.12] hover:text-white'
+                  className={`cw-pill px-4 py-2 text-sm ${
+                    showAllGroups ? 'cw-pill-active' : ''
                   }`}
                 >
                   {showAllGroups ? 'One group' : 'Show all'}

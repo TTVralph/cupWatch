@@ -29,7 +29,7 @@ function StandingsTable({ group, index }: { group: GroupStanding; index: number 
     <CupCard delay={index * 0.05} className="overflow-hidden text-slate-100">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 px-3 py-3 sm:px-4 sm:py-4">
         <h2 className="text-base font-black text-white sm:text-lg">{group.group}</h2>
-        <span className="rounded-full bg-emerald-300/10 px-3 py-1 text-[0.7rem] font-black text-emerald-100 sm:text-xs">Top teams advance</span>
+        <span className="rounded-full bg-[rgba(245,197,91,0.1)] px-3 py-1 text-[0.7rem] font-black text-[var(--cw-primary)] sm:text-xs">Top teams advance</span>
       </div>
       <div className="overflow-x-auto">
         <table className="cw-table w-full table-fixed text-left text-xs sm:text-sm">

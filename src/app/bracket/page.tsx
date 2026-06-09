@@ -128,7 +128,7 @@ function BracketMatchCard({ match, index }: { match: Match; index: number }) {
   const hasScore = match.homeTeam.score !== undefined || match.awayTeam.score !== undefined;
 
   return (
-    <Link href={`/match/${match.id}`} className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2" aria-label={`View details for ${displayTeamName(match, 'home')} vs ${displayTeamName(match, 'away')}`}>
+    <Link href={`/match/${match.id}`} className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cw-primary)] focus-visible:ring-offset-2" aria-label={`View details for ${displayTeamName(match, 'home')} vs ${displayTeamName(match, 'away')}`}>
       <BrandedMatchCard delay={index * 0.04} className="p-3.5 text-slate-100 sm:p-4">
       <div className="mb-4 flex items-start justify-between gap-2 sm:gap-3">
         <div>
@@ -146,7 +146,7 @@ function BracketMatchCard({ match, index }: { match: Match; index: number }) {
           </div>
           {hasScore ? <span className="shrink-0 text-lg font-black text-white">{match.homeTeam.score ?? 0}</span> : null}
         </div>
-        <div className="px-2 text-xs font-black uppercase tracking-wide text-emerald-300">vs</div>
+        <div className="px-2 text-xs font-black uppercase tracking-wide text-[var(--cw-primary)]">vs</div>
         <div className="flex min-w-0 items-center justify-between gap-3 rounded-2xl bg-white/[0.06] px-4 py-3">
           <div className="min-w-0">
             <p className="break-words text-sm font-black text-white">{displayTeamName(match, 'away')}</p>

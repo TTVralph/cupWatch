@@ -77,7 +77,7 @@ function NewsCard({ article, delay }: { article: NewsArticle; delay: number }) {
       {article.image ? <img src={article.image} alt="" className="h-36 w-full object-cover opacity-90 sm:h-40" loading="lazy" /> : null}
       <div className="p-4 sm:p-5">
         <div className="mb-3 flex items-center justify-between gap-3 text-[0.7rem] font-black uppercase tracking-wide text-slate-300 sm:mb-4 sm:text-xs">
-          <span>{article.source ?? 'CupWatch'}</span>
+          <span>CupWatch</span>
           {article.publishedAt ? <time dateTime={article.publishedAt}>{formatNewsDate(article.publishedAt)}</time> : null}
         </div>
         <h2 className="text-lg font-black leading-tight text-white sm:text-xl">{article.title}</h2>
@@ -89,7 +89,7 @@ function NewsCard({ article, delay }: { article: NewsArticle; delay: number }) {
   if (!article.url) return card;
 
   return (
-    <a href={article.url} target="_blank" rel="noreferrer" className="block h-full rounded-[1.5rem] focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:ring-offset-4 focus:ring-offset-slate-950">
+    <a href={article.url} target="_blank" rel="noreferrer" className="block h-full rounded-[1.5rem] focus:outline-none focus:ring-2 focus:ring-[var(--cw-primary)] focus:ring-offset-4 focus:ring-offset-slate-950">
       {card}
     </a>
   );

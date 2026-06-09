@@ -24,7 +24,7 @@ export function Header() {
           </span>
           <div className="min-w-0">
             <p className="text-lg font-black tracking-tight text-white">CupWatch</p>
-            <p className="truncate text-xs font-bold uppercase tracking-[0.14em] text-slate-400">Midnight match control</p>
+            <p className="truncate text-xs font-bold uppercase tracking-[0.14em] text-slate-300">Midnight match control</p>
           </div>
         </Link>
         <nav className="hidden items-center gap-1 rounded-full border border-white/10 bg-white/[0.055] p-1 md:flex">

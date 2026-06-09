@@ -31,10 +31,10 @@ const statusStyles: Record<MatchStatus, string> = {
 
 function TeamLogo({ name, logo }: { name: string; logo?: string }) {
   if (logo) {
-    return <img src={logo} alt="" className="mx-auto size-16 rounded-full bg-white/90 object-contain p-2 shadow-lg shadow-slate-950/20" loading="lazy" />;
+    return <img src={logo} alt="" className="mx-auto size-14 rounded-full sm:size-16 bg-white/90 object-contain p-2 shadow-lg shadow-slate-950/20" loading="lazy" />;
   }
 
-  return <span className="mx-auto grid size-16 place-items-center rounded-full bg-white/10 text-lg font-black text-white ring-1 ring-white/15">{getTeamInitials(name)}</span>;
+  return <span className="mx-auto grid size-14 sm:size-16 place-items-center rounded-full bg-white/10 text-lg font-black text-white ring-1 ring-white/15">{getTeamInitials(name)}</span>;
 }
 
 function DetailSection({ title, children }: { title: string; children: ReactNode }) {
@@ -49,7 +49,7 @@ function DetailSection({ title, children }: { title: string; children: ReactNode
 function InfoRow({ label, value }: { label: string; value?: ReactNode }) {
   return (
     <div className="flex items-start justify-between gap-4 rounded-2xl bg-slate-950/40 px-4 py-3">
-      <span className="shrink-0 text-xs font-black uppercase tracking-wide text-slate-500">{label}</span>
+      <span className="shrink-0 text-xs font-black uppercase tracking-wide text-slate-300">{label}</span>
       <span className="min-w-0 break-words text-right text-sm font-bold text-slate-100">{value || 'TBA'}</span>
     </div>
   );
@@ -117,35 +117,35 @@ function MatchDetail({ match }: { match: Match }) {
 
         <CupCard className="overflow-hidden">
           <div className="border-b border-white/10 p-5">
-            <div className="flex items-start justify-between gap-3">
+            <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="text-xs font-black uppercase tracking-[0.28em] text-emerald-200">{deriveStageLabel(match)}</p>
-                <h1 className="mt-2 text-2xl font-black tracking-tight md:text-4xl">{match.homeTeam.abbreviation} vs {match.awayTeam.abbreviation}</h1>
+                <h1 className="mt-2 text-xl font-black tracking-tight sm:text-2xl md:text-4xl">{match.homeTeam.abbreviation} vs {match.awayTeam.abbreviation}</h1>
               </div>
               <span className={`shrink-0 rounded-full border px-3 py-1 text-xs font-black uppercase tracking-wide ${statusStyles[match.status]}`}>{statusLabels[match.status]}</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 p-5 text-center">
+          <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 p-4 text-center sm:gap-3 sm:p-5">
             <div className="min-w-0 space-y-3">
               <TeamLogo name={match.homeTeam.name} logo={match.homeTeam.logo} />
               <div>
-                <p className="break-words text-lg font-black leading-tight">{match.homeTeam.name}</p>
-                <p className="mt-1 text-xs font-black uppercase tracking-wide text-slate-400">{match.homeTeam.abbreviation}</p>
+                <p className="break-words text-base font-black leading-tight sm:text-lg">{match.homeTeam.name}</p>
+                <p className="mt-1 text-xs font-black uppercase tracking-wide text-slate-300">{match.homeTeam.abbreviation}</p>
               </div>
               <FollowTeamButton team={match.homeTeam} />
             </div>
 
-            <div className="rounded-[1.5rem] bg-slate-950/55 px-4 py-3 shadow-inner shadow-slate-950/40">
-              {matchHasScore ? <p className="text-3xl font-black tabular-nums">{score}</p> : <p className="text-2xl font-black uppercase tracking-wide">vs</p>}
-              <p className="mt-1 text-[0.65rem] font-black uppercase tracking-wide text-slate-500">{match.statusText}</p>
+            <div className="rounded-[1.25rem] bg-slate-950/55 px-3 py-3 shadow-inner shadow-slate-950/40 sm:rounded-[1.5rem] sm:px-4">
+              {matchHasScore ? <p className="text-2xl font-black tabular-nums sm:text-3xl">{score}</p> : <p className="text-xl font-black uppercase tracking-wide sm:text-2xl">vs</p>}
+              <p className="mt-1 text-[0.65rem] font-black uppercase tracking-wide text-slate-300">{match.statusText}</p>
             </div>
 
             <div className="min-w-0 space-y-3">
               <TeamLogo name={match.awayTeam.name} logo={match.awayTeam.logo} />
               <div>
-                <p className="break-words text-lg font-black leading-tight">{match.awayTeam.name}</p>
-                <p className="mt-1 text-xs font-black uppercase tracking-wide text-slate-400">{match.awayTeam.abbreviation}</p>
+                <p className="break-words text-base font-black leading-tight sm:text-lg">{match.awayTeam.name}</p>
+                <p className="mt-1 text-xs font-black uppercase tracking-wide text-slate-300">{match.awayTeam.abbreviation}</p>
               </div>
               <FollowTeamButton team={match.awayTeam} />
             </div>

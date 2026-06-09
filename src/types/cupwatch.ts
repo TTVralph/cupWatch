@@ -1,22 +1,4 @@
-export type MatchStatus = 'live' | 'upcoming' | 'finished';
-
-export type TeamSide = {
-  name: string;
-  code: string;
-  flag: string;
-  score?: number;
-};
-
-export type Match = {
-  id: string;
-  status: MatchStatus;
-  kickoff: string;
-  home: TeamSide;
-  away: TeamSide;
-  venue: string;
-  stage: string;
-  minute?: string;
-};
+export type { Match, MatchStatus } from './match';
 
 export type StandingRow = {
   team: string;

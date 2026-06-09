@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { MotionCard } from '@/components/MotionCard';
 import { cityCountryText, deriveStageLabel, formatMatchDate, formatMatchTime, getTeamInitials, hasScore, scoreText } from '@/lib/match-utils';
+import { useFavoriteTeams } from '@/hooks/use-favorite-teams';
 import type { Match, MatchStatus } from '@/types/match';
 
 type MatchesApiResponse = {
@@ -84,6 +85,22 @@ function MatchNotFound() {
   );
 }
 
+function FollowTeamButton({ team }: { team: Match['homeTeam'] }) {
+  const { isFavorite, toggleFavorite } = useFavoriteTeams();
+  const following = isFavorite(team.abbreviation);
+
+  return (
+    <button
+      type="button"
+      onClick={() => toggleFavorite(team.abbreviation)}
+      aria-pressed={following}
+      className={`mx-auto inline-flex rounded-full border px-3 py-2 text-xs font-black transition ${following ? 'border-emerald-300 bg-emerald-300 text-slate-950' : 'border-white/10 bg-white/10 text-slate-200 hover:bg-white/15'}`}
+    >
+      {following ? `Following ${team.name}` : `Follow ${team.name}`}
+    </button>
+  );
+}
+
 function MatchDetail({ match }: { match: Match }) {
   const score = scoreText(match, ' – ');
   const cityCountry = cityCountryText(match);
@@ -114,6 +131,7 @@ function MatchDetail({ match }: { match: Match }) {
                 <p className="break-words text-lg font-black leading-tight">{match.homeTeam.name}</p>
                 <p className="mt-1 text-xs font-black uppercase tracking-wide text-slate-400">{match.homeTeam.abbreviation}</p>
               </div>
+              <FollowTeamButton team={match.homeTeam} />
             </div>
 
             <div className="rounded-[1.5rem] bg-slate-950/55 px-4 py-3 shadow-inner shadow-slate-950/40">
@@ -127,6 +145,7 @@ function MatchDetail({ match }: { match: Match }) {
                 <p className="break-words text-lg font-black leading-tight">{match.awayTeam.name}</p>
                 <p className="mt-1 text-xs font-black uppercase tracking-wide text-slate-400">{match.awayTeam.abbreviation}</p>
               </div>
+              <FollowTeamButton team={match.awayTeam} />
             </div>
           </div>
         </MotionCard>

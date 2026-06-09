@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { MotionCard } from '@/components/MotionCard';
+import { matchInvolvesFavoriteTeam } from '@/lib/favorite-teams';
 import { PageShell } from '@/components/PageShell';
 import { deriveStageLabel, locationText, scoreText, tournamentDateKey } from '@/lib/match-utils';
+import { useFavoriteTeams } from '@/hooks/use-favorite-teams';
 import type { Match, MatchStatus } from '@/types/match';
 
 type MatchesApiResponse = {
@@ -14,7 +16,7 @@ type MatchesApiResponse = {
   message?: string;
 };
 
-type ScheduleFilter = 'all' | 'canada' | 'usa' | 'mexico' | 'knockout';
+type ScheduleFilter = 'all' | 'favorites' | 'canada' | 'usa' | 'mexico' | 'knockout';
 
 type DateGroup = {
   key: string;
@@ -24,6 +26,7 @@ type DateGroup = {
 
 const filters: Array<{ id: ScheduleFilter; label: string }> = [
   { id: 'all', label: 'All' },
+  { id: 'favorites', label: 'Favorites' },
   { id: 'canada', label: 'Canada' },
   { id: 'usa', label: 'USA' },
   { id: 'mexico', label: 'Mexico' },
@@ -76,8 +79,8 @@ function localDateKey(date: string) {
   return `${year}-${month}-${day}`;
 }
 
-function teamMatches(match: Match, filter: Exclude<ScheduleFilter, 'all' | 'knockout'>) {
-  const aliases: Record<Exclude<ScheduleFilter, 'all' | 'knockout'>, string[]> = {
+function teamMatches(match: Match, filter: Exclude<ScheduleFilter, 'all' | 'favorites' | 'knockout'>) {
+  const aliases: Record<Exclude<ScheduleFilter, 'all' | 'favorites' | 'knockout'>, string[]> = {
     canada: ['canada', 'can'],
     usa: ['usa', 'united states', 'united states of america'],
     mexico: ['mexico', 'mex'],
@@ -94,8 +97,9 @@ function isKnockout(match: Match) {
   return tournamentDateKey(match.date) >= '2026-06-28';
 }
 
-function filterMatches(matches: Match[], activeFilter: ScheduleFilter) {
+function filterMatches(matches: Match[], activeFilter: ScheduleFilter, favorites: string[]) {
   if (activeFilter === 'all') return matches;
+  if (activeFilter === 'favorites') return matches.filter((match) => matchInvolvesFavoriteTeam(match, favorites));
   if (activeFilter === 'knockout') return matches.filter(isKnockout);
   return matches.filter((match) => teamMatches(match, activeFilter));
 }
@@ -177,6 +181,7 @@ export default function SchedulePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [fallbackMessage, setFallbackMessage] = useState<string | null>(null);
+  const { favorites } = useFavoriteTeams();
 
   useEffect(() => {
     let isMounted = true;
@@ -214,11 +219,11 @@ export default function SchedulePage() {
     };
   }, []);
 
-  const filteredMatches = useMemo(() => filterMatches(matches, activeFilter), [matches, activeFilter]);
+  const filteredMatches = useMemo(() => filterMatches(matches, activeFilter, favorites), [matches, activeFilter, favorites]);
   const groupedMatches = useMemo(() => groupMatchesByLocalDate(filteredMatches), [filteredMatches]);
 
   return (
-    <PageShell eyebrow="Schedule" title="Every World Cup match, day by day" description="Browse the full tournament schedule in your local timezone, with quick filters for hosts and the knockout rounds.">
+    <PageShell eyebrow="Schedule" title="Every World Cup match, day by day" description="Browse the full tournament schedule in your local timezone, with quick filters for favorites, hosts, and the knockout rounds.">
       {fallbackMessage ? <div className="mb-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-bold text-amber-800">{fallbackMessage}</div> : null}
       {error ? <div className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">{error}</div> : null}
 
@@ -265,7 +270,9 @@ export default function SchedulePage() {
           ))}
         </div>
       ) : (
-        <div className="rounded-[1.5rem] border border-dashed border-slate-200 bg-white/70 px-4 py-8 text-center text-sm font-bold text-slate-500">No matches found for this filter.</div>
+        <div className="rounded-[1.5rem] border border-dashed border-slate-200 bg-white/70 px-4 py-8 text-center text-sm font-bold text-slate-500">
+          {activeFilter === 'favorites' && !favorites.length ? 'Follow teams from the homepage or match pages to use the Favorites filter.' : 'No matches found for this filter.'}
+        </div>
       )}
     </PageShell>
   );

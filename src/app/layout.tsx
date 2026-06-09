@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     default: 'CupWatch | World Cup 2026 Companion',
     template: '%s | CupWatch',
   },
-  description: 'A clean World Cup 2026 companion app',
+  description: 'A calm midnight-stadium World Cup 2026 command center.',
   manifest: '/manifest.webmanifest',
   icons: {
     icon: [{ url: '/icons/icon.svg', type: 'image/svg+xml' }],
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#020617',
+  themeColor: '#030712',
   width: 'device-width',
   initialScale: 1,
 };

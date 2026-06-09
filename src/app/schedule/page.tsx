@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import { MotionCard } from '@/components/MotionCard';
+import { MatchCard as BrandedMatchCard } from '@/components/Brand';
 import { matchInvolvesFavoriteTeam } from '@/lib/favorite-teams';
 import { PageShell } from '@/components/PageShell';
 import { deriveStageLabel, locationText, scoreText, tournamentDateKey } from '@/lib/match-utils';
@@ -40,9 +40,9 @@ const statusLabels: Record<MatchStatus, string> = {
 };
 
 const statusStyles: Record<MatchStatus, string> = {
-  live: 'bg-red-400/15 text-red-100 ring-red-300/30',
-  pre: 'bg-cyan-400/15 text-cyan-100 ring-cyan-300/30',
-  post: 'bg-slate-500/20 text-slate-200 ring-slate-400/30',
+  live: 'cw-status-live',
+  pre: 'cw-status-pre',
+  post: 'cw-status-post',
 };
 
 const localDateFormatter = new Intl.DateTimeFormat('en-US', {
@@ -129,7 +129,7 @@ function groupMatchesByLocalDate(matches: Match[]): DateGroup[] {
 }
 
 function LoadingCard() {
-  return <div className="h-40 animate-pulse rounded-[1.5rem] bg-white/[0.08] shadow-lg shadow-slate-950/20" />;
+  return <div className="h-40 animate-pulse cw-card" />;
 }
 
 function MatchCard({ match, index }: { match: Match; index: number }) {
@@ -138,7 +138,7 @@ function MatchCard({ match, index }: { match: Match; index: number }) {
 
   return (
     <Link href={`/match/${match.id}`} className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2" aria-label={`View details for ${match.homeTeam.name} vs ${match.awayTeam.name}`}>
-      <MotionCard delay={Math.min(index * 0.02, 0.18)} className="rounded-[1.5rem] border border-white/10 bg-white/[0.08] text-slate-100 p-4 shadow-lg shadow-slate-950/20 transition hover:-translate-y-0.5 hover:bg-white/[0.11]">
+      <BrandedMatchCard delay={Math.min(index * 0.02, 0.18)} className="p-4 text-slate-100">
       <div className="mb-3 flex items-start justify-between gap-3">
         <div>
           <p className="text-lg font-black text-white">{formatLocalTime(match.date)}</p>
@@ -170,7 +170,7 @@ function MatchCard({ match, index }: { match: Match; index: number }) {
         {location ? <p>{location}</p> : null}
         {match.broadcasts?.length ? <p>Broadcasts: {match.broadcasts.join(', ')}</p> : null}
       </div>
-      </MotionCard>
+      </BrandedMatchCard>
     </Link>
   );
 }
@@ -236,9 +236,7 @@ export default function SchedulePage() {
                 key={filter.id}
                 type="button"
                 onClick={() => setActiveFilter(filter.id)}
-                className={`rounded-full px-4 py-2 text-sm font-black transition ${
-                  active ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'bg-white/[0.08] text-slate-300 shadow-lg shadow-slate-950/15 hover:bg-white/[0.12] hover:text-white'
-                }`}
+                className={`cw-pill px-4 py-2 text-sm ${active ? 'cw-pill-active' : ''}`}
               >
                 {filter.label}
               </button>
@@ -257,10 +255,10 @@ export default function SchedulePage() {
         <div className="space-y-7">
           {groupedMatches.map((group) => (
             <section key={group.key}>
-              <div className="sticky top-[73px] z-20 mb-3 rounded-2xl border border-slate-200/80 bg-white/[0.06]/95 px-4 py-3 backdrop-blur">
+              <div className="sticky top-[73px] z-20 mb-3 rounded-2xl border border-white/10 bg-[#030712]/80 px-4 py-3 shadow-[var(--cw-shadow-soft)] backdrop-blur-xl">
                 <div className="flex items-center justify-between gap-3">
                   <h2 className="text-xl font-black text-white">{group.title}</h2>
-                  <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-slate-500 shadow-sm shadow-slate-200/80">{group.matches.length}</span>
+                  <span className="rounded-full bg-[var(--cw-primary)] px-3 py-1 text-xs font-black text-slate-950 shadow-[var(--cw-glow-green)]">{group.matches.length}</span>
                 </div>
               </div>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

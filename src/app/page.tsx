@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { MotionCard } from '@/components/MotionCard';
 import { deriveStageLabel } from '@/lib/match-utils';
-import type { GroupStanding, NewsItem } from '@/types/cupwatch';
+import type { GroupStanding, NewsArticle } from '@/types/cupwatch';
 import type { Match, MatchStatus } from '@/types/match';
 
 type MatchesApiResponse = {
@@ -22,7 +22,7 @@ type StandingsApiResponse = {
 };
 
 type NewsApiResponse = {
-  data: NewsItem[];
+  data: NewsArticle[];
 };
 
 type LoadState = 'idle' | 'loading' | 'ready' | 'error';
@@ -471,7 +471,7 @@ function FollowTeamsCard({ matches }: { matches: Match[] }) {
   );
 }
 
-function NewsPreview({ news, isLoading }: { news: NewsItem[]; isLoading: boolean }) {
+function NewsPreview({ news, isLoading }: { news: NewsArticle[]; isLoading: boolean }) {
   return (
     <section>
       <SectionHeader eyebrow="Briefing" title="Latest News" href="/news" linkText="See more →" />
@@ -484,14 +484,7 @@ function NewsPreview({ news, isLoading }: { news: NewsItem[]; isLoading: boolean
       ) : news.length ? (
         <div className="grid gap-4 md:grid-cols-3">
           {news.slice(0, 3).map((item, index) => (
-            <MotionCard key={item.id} delay={index * 0.04} className="rounded-[1.5rem] border border-white/10 bg-white/[0.08] p-4 text-white shadow-lg shadow-slate-950/20 backdrop-blur">
-              <div className="mb-3 flex items-center justify-between gap-3 text-[0.65rem] font-black uppercase tracking-wide text-slate-400">
-                <span>{item.source}</span>
-                <span>{item.time}</span>
-              </div>
-              <h3 className="text-lg font-black leading-tight">{item.headline}</h3>
-              <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-300">{item.summary}</p>
-            </MotionCard>
+            <NewsPreviewCard key={item.id} article={item} delay={index * 0.04} />
           ))}
         </div>
       ) : (
@@ -501,11 +494,46 @@ function NewsPreview({ news, isLoading }: { news: NewsItem[]; isLoading: boolean
   );
 }
 
+
+function NewsPreviewCard({ article, delay }: { article: NewsArticle; delay: number }) {
+  const card = (
+    <MotionCard delay={delay} className="h-full overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.08] text-white shadow-lg shadow-slate-950/20 backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/[0.1]">
+      {article.image ? <img src={article.image} alt="" className="h-32 w-full object-cover" loading="lazy" /> : null}
+      <div className="p-4">
+        <div className="mb-3 flex items-center justify-between gap-3 text-[0.65rem] font-black uppercase tracking-wide text-slate-400">
+          <span>{article.source ?? 'ESPN'}</span>
+          {article.publishedAt ? <time dateTime={article.publishedAt}>{formatNewsDate(article.publishedAt)}</time> : null}
+        </div>
+        <h3 className="text-lg font-black leading-tight">{article.title}</h3>
+        {article.description ? <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-300">{article.description}</p> : null}
+      </div>
+    </MotionCard>
+  );
+
+  if (!article.url) return card;
+
+  return (
+    <a href={article.url} target="_blank" rel="noreferrer" className="block h-full focus:outline-none focus:ring-2 focus:ring-cyan-300 focus:ring-offset-4 focus:ring-offset-slate-950">
+      {card}
+    </a>
+  );
+}
+
+function formatNewsDate(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+  }).format(date);
+}
+
 export default function TodayPage() {
   const [now, setNow] = useState(() => new Date());
   const [matches, setMatches] = useState<Match[]>([]);
   const [groups, setGroups] = useState<GroupStanding[]>([]);
-  const [news, setNews] = useState<NewsItem[]>([]);
+  const [news, setNews] = useState<NewsArticle[]>([]);
   const [matchesState, setMatchesState] = useState<LoadState>('idle');
   const [standingsState, setStandingsState] = useState<LoadState>('idle');
   const [newsState, setNewsState] = useState<LoadState>('idle');

@@ -1,4 +1,4 @@
-import type { BracketRound, GroupStanding, Match, NewsItem } from '@/types/cupwatch';
+import type { BracketRound, GroupStanding, Match, NewsArticle } from '@/types/cupwatch';
 
 export const mockTodayMatches: Match[] = [
   {
@@ -121,26 +121,26 @@ export const mockBracket: BracketRound[] = [
   },
 ];
 
-export const mockNews: NewsItem[] = [
+export const mockNews: NewsArticle[] = [
   {
     id: 'squad-notes',
-    headline: 'Hosts keep focus as opening week rhythm builds',
+    title: 'Hosts keep focus as opening week rhythm builds',
     source: 'CupWatch Desk',
-    time: '12 min ago',
-    summary: 'Training updates, travel notes, and likely rotation plans from the three host nations in one quick read.',
+    publishedAt: '2026-06-09T12:00:00Z',
+    description: 'Training updates, travel notes, and likely rotation plans from the three host nations in one quick read.',
   },
   {
     id: 'venue-guide',
-    headline: 'How to follow matchday across three time zones',
+    title: 'How to follow matchday across three time zones',
     source: 'Matchday Guide',
-    time: '38 min ago',
-    summary: 'A simple viewing map for North American kickoff windows, built for fans checking scores between commutes.',
+    publishedAt: '2026-06-09T11:30:00Z',
+    description: 'A simple viewing map for North American kickoff windows, built for fans checking scores between commutes.',
   },
   {
     id: 'group-watch',
-    headline: 'Group C storylines to watch before first kickoffs',
+    title: 'Group C storylines to watch before first kickoffs',
     source: 'CupWatch Analysis',
-    time: '1 hr ago',
-    summary: 'Canada, Spain, Morocco, and Japan bring contrasting styles into one of the tournament’s most balanced groups.',
+    publishedAt: '2026-06-09T11:00:00Z',
+    description: 'Canada, Spain, Morocco, and Japan bring contrasting styles into one of the tournament’s most balanced groups.',
   },
 ];

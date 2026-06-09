@@ -1,4 +1,4 @@
-import type { GroupStanding, StandingRow } from '@/types/cupwatch';
+import type { GroupStanding, NewsArticle, StandingRow } from '@/types/cupwatch';
 import type { Match, MatchStatus } from '@/types/match';
 
 export const ESPN_WORLD_CUP_SCOREBOARD_URL = 'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard';
@@ -326,4 +326,160 @@ function normalizeRound(competition: EspnCompetition | undefined, event: EspnEve
 function normalizeBroadcasts(competition: EspnCompetition | undefined) {
   const names = competition?.broadcasts?.[0]?.names ?? [];
   return names.length > 0 ? names : undefined;
+}
+
+export const ESPN_WORLD_CUP_NEWS_URL = 'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/news';
+
+const ESPN_NEWS_TIMEOUT_MS = 10_000;
+const BLOCKED_NEWS_TERMS = [
+  'betting',
+  'bet ',
+  ' bets',
+  'odds',
+  'sportsbook',
+  'bookmaker',
+  'wager',
+  'wagering',
+  'gambling',
+  'casino',
+  'parlay',
+  'draftkings',
+  'fanduel',
+  'betmgm',
+  'caesars',
+  'pointsbet',
+  'sponsor',
+  'sponsored',
+];
+
+type EspnNewsResponse = {
+  articles?: EspnNewsArticle[];
+  headlines?: EspnNewsArticle[];
+};
+
+type EspnNewsArticle = {
+  id?: number | string;
+  nowId?: string;
+  dataSourceIdentifier?: string;
+  headline?: string;
+  title?: string;
+  description?: string;
+  type?: string;
+  published?: string;
+  lastModified?: string;
+  byline?: string;
+  source?: string;
+  images?: Array<{
+    url?: string;
+    type?: string;
+    name?: string;
+    alt?: string;
+  }>;
+  links?: {
+    web?: {
+      href?: string;
+    };
+    mobile?: {
+      href?: string;
+    };
+    api?: {
+      news?: {
+        href?: string;
+      };
+    };
+  };
+  categories?: Array<{
+    description?: string;
+    type?: string;
+    topic?: string;
+  }>;
+};
+
+export async function fetchEspnWorldCupNews(): Promise<NewsArticle[]> {
+  const response = await fetch(ESPN_WORLD_CUP_NEWS_URL, {
+    next: { revalidate: ESPN_REVALIDATE_SECONDS },
+    signal: AbortSignal.timeout(ESPN_NEWS_TIMEOUT_MS),
+  } as RequestInit & { next: { revalidate: number } });
+
+  if (!response.ok) {
+    throw new Error(`ESPN news request failed with status ${response.status}`);
+  }
+
+  const data = (await response.json()) as EspnNewsResponse;
+  const articles = normalizeEspnNews(data);
+
+  if (articles.length === 0) {
+    throw new Error('ESPN news response did not contain usable World Cup articles');
+  }
+
+  return articles;
+}
+
+export function normalizeEspnNews(data: EspnNewsResponse): NewsArticle[] {
+  const seen = new Set<string>();
+  const rawArticles = [...(data.articles ?? []), ...(data.headlines ?? [])];
+
+  return rawArticles
+    .map(normalizeEspnNewsArticle)
+    .filter((article): article is NewsArticle => article !== null)
+    .filter((article) => {
+      if (seen.has(article.id)) return false;
+      seen.add(article.id);
+      return true;
+    })
+    .slice(0, 12);
+}
+
+function normalizeEspnNewsArticle(article: EspnNewsArticle): NewsArticle | null {
+  const title = cleanText(article.headline ?? article.title);
+  const url = article.links?.web?.href ?? article.links?.mobile?.href;
+
+  if (!title || isBlockedNewsArticle(article, title, url)) return null;
+
+  return {
+    id: String(article.id ?? article.nowId ?? article.dataSourceIdentifier ?? stableArticleId(title, url)),
+    title,
+    description: cleanText(article.description),
+    image: selectArticleImage(article),
+    source: cleanText(article.source ?? article.byline) ?? 'ESPN',
+    publishedAt: normalizePublishedAt(article.published ?? article.lastModified),
+    url,
+  };
+}
+
+function selectArticleImage(article: EspnNewsArticle) {
+  const preferredImage = article.images?.find((image) => image.url && image.type !== 'video') ?? article.images?.find((image) => image.url);
+  return preferredImage?.url;
+}
+
+function cleanText(value?: string) {
+  const cleaned = value?.replace(/\s+/g, ' ').trim();
+  return cleaned || undefined;
+}
+
+function normalizePublishedAt(value?: string) {
+  if (!value) return undefined;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
+}
+
+function stableArticleId(title: string, url?: string) {
+  return `${title}-${url ?? ''}`.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '').slice(0, 80);
+}
+
+function isBlockedNewsArticle(article: EspnNewsArticle, title: string, url?: string) {
+  const haystack = [
+    title,
+    article.description,
+    article.source,
+    article.byline,
+    article.type,
+    url,
+    ...(article.categories ?? []).flatMap((category) => [category.description, category.type, category.topic]),
+  ]
+    .filter((value): value is string => Boolean(value))
+    .join(' ')
+    .toLowerCase();
+
+  return BLOCKED_NEWS_TERMS.some((term) => haystack.includes(term));
 }

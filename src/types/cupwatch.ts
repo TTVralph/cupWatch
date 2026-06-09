@@ -28,10 +28,14 @@ export type BracketRound = {
   }>;
 };
 
-export type NewsItem = {
+export type NewsArticle = {
   id: string;
-  headline: string;
-  source: string;
-  time: string;
-  summary: string;
+  title: string;
+  description?: string;
+  image?: string;
+  source?: string;
+  publishedAt?: string;
+  url?: string;
 };
+
+export type NewsItem = NewsArticle;

@@ -113,7 +113,7 @@ export default function TodayPage() {
         setIsLoading(true);
         setError(null);
 
-        const response = await fetch('/api/matches');
+        const response = await fetch('/api/matches?today=true');
         if (!response.ok) {
           throw new Error(`Matches request failed with status ${response.status}`);
         }
